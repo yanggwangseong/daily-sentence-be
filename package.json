@@ -1,0 +1,30 @@
+{
+	"name": "ts-node-starter",
+	"version": "1.0.0",
+	"description": "ts-node-starter",
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
+	"scripts": {
+		"build": "rimraf build && tsc -p ./tsconfig.build.json",
+		"test": "jest",
+		"lint": "eslint '*/**/*.ts'"
+	},
+	"author": {
+		"name": "yanggwangseong",
+		"email": "soaw83@gmail.com",
+		"url": "https://github.com/yanggwangseong"
+	},
+	"license": "MIT",
+	"devDependencies": {
+		"@types/jest": "^29.5.14",
+		"@typescript-eslint/eslint-plugin": "^8.26.0",
+		"@typescript-eslint/parser": "^8.26.0",
+		"eslint": "^9.21.0",
+		"eslint-config-prettier": "^10.0.2",
+		"eslint-plugin-prettier": "^5.2.3",
+		"jest": "^29.7.0",
+		"rimraf": "^6.0.1",
+		"ts-jest": "^29.2.6",
+		"typescript": "^5.5.4"
+	}
+}
