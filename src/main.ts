@@ -1,5 +1,5 @@
-const main = () => {
-  console.log("Hello, world!");
-};
+import { Backend } from './application';
 
-main();
+void Backend.start({
+	cors: { credentials: true },
+});
