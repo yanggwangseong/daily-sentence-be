@@ -11,4 +11,11 @@ export class SentencesRepository extends Repository<SentencesEntity> {
 	) {
 		super(repository.target, repository.manager, repository.queryRunner);
 	}
+
+	findOneByDate(datetime: string) {
+		return this.repository
+			.createQueryBuilder('sentence')
+			.where('DATE(sentence.createdAt) = :date', { date: datetime })
+			.getOne();
+	}
 }
