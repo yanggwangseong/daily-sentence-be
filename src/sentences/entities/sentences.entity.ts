@@ -2,6 +2,7 @@ import {
 	Column,
 	CreateDateColumn,
 	Entity,
+	JoinColumn,
 	OneToMany,
 	OneToOne,
 	PrimaryGeneratedColumn,
@@ -24,6 +25,7 @@ export class SentencesEntity {
 	vocabs!: VocabsEntity[];
 
 	@OneToOne(() => VideosEntity, (video) => video.sentence)
+	@JoinColumn()
 	video!: VideosEntity;
 
 	@CreateDateColumn({ type: 'timestamp', nullable: false })
