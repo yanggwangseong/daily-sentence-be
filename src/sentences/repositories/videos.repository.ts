@@ -7,7 +7,7 @@ import { Repository } from 'typeorm';
 export class VideosRepository extends Repository<VideosEntity> {
 	constructor(
 		@InjectRepository(VideosEntity)
-		private readonly repository: Repository<VideosEntity>,
+		repository: Repository<VideosEntity>,
 	) {
 		super(repository.target, repository.manager, repository.queryRunner);
 	}

@@ -7,7 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 export class VisitsRepository extends Repository<VisitsEntity> {
 	constructor(
 		@InjectRepository(VisitsEntity)
-		private readonly repository: Repository<VisitsEntity>,
+		repository: Repository<VisitsEntity>,
 	) {
 		super(repository.target, repository.manager, repository.queryRunner);
 	}

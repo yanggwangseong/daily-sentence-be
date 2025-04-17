@@ -7,7 +7,7 @@ import { VocabsEntity } from '../entities/vocabs.entity';
 export class VocabsRepository extends Repository<VocabsEntity> {
 	constructor(
 		@InjectRepository(VocabsEntity)
-		private readonly repository: Repository<VocabsEntity>,
+		repository: Repository<VocabsEntity>,
 	) {
 		super(repository.target, repository.manager, repository.queryRunner);
 	}
