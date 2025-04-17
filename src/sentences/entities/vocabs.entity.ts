@@ -2,9 +2,11 @@ import {
 	Column,
 	CreateDateColumn,
 	Entity,
+	ManyToOne,
 	PrimaryGeneratedColumn,
 	UpdateDateColumn,
 } from 'typeorm';
+import { SentencesEntity } from './sentences.entity';
 
 @Entity({ name: 'vocabs' })
 export class VocabsEntity {
@@ -16,6 +18,9 @@ export class VocabsEntity {
 
 	@Column({ type: 'varchar', nullable: false, length: 100 })
 	definition!: string;
+
+	@ManyToOne(() => SentencesEntity, (sentence) => sentence.vocabs)
+	sentence!: SentencesEntity;
 
 	@CreateDateColumn({ type: 'timestamp', nullable: false })
 	createdAt!: Date;

@@ -15,6 +15,8 @@ export class SentencesRepository extends Repository<SentencesEntity> {
 	findOneByDate(datetime: string) {
 		return this.repository
 			.createQueryBuilder('sentence')
+			.leftJoinAndSelect('sentence.vocabs', 'vocab')
+			.leftJoinAndSelect('sentence.video', 'video')
 			.where('DATE(sentence.createdAt) = :date', { date: datetime })
 			.getOne();
 	}

@@ -5,7 +5,20 @@ import { SentencesRepository } from './repositories/sentences.repository';
 export class SentencesService {
 	constructor(private readonly sentencesRepository: SentencesRepository) {}
 
-	getSentences(date: string) {
-		return this.sentencesRepository.findOneByDate(date);
+	async getSentences(date: string) {
+		const sentence = await this.sentencesRepository.findOneByDate(date);
+
+		if (!sentence) return null;
+
+		return {
+			date: sentence.createdAt.toISOString().split('T')[0],
+			sentence: sentence.sentence,
+			meaning: sentence.meaning,
+			vocab: sentence.vocabs.map((v) => ({
+				word: v.word,
+				definition: v.definition,
+			})),
+			videoUrl: sentence.video?.videoUrl ?? '',
+		};
 	}
 }
