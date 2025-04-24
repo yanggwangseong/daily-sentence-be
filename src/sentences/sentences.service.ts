@@ -6,12 +6,18 @@ export class SentencesService {
 	constructor(private readonly sentencesRepository: SentencesRepository) {}
 
 	async getSentences(date: string) {
-		const sentence = await this.sentencesRepository.findOneByDate(date);
+		const koreanDate = new Date(date).toLocaleDateString('sv-SE', {
+			timeZone: 'Asia/Seoul',
+		});
+
+		const sentence = await this.sentencesRepository.findOneByDate(koreanDate);
 
 		if (!sentence) return null;
 
 		return {
-			date: sentence.createdAt.toISOString().split('T')[0],
+			date: new Date(sentence.createdAt).toLocaleDateString('sv-SE', {
+				timeZone: 'Asia/Seoul',
+			}),
 			sentence: sentence.sentence,
 			meaning: sentence.meaning,
 			vocab: sentence.vocabs.map((v) => ({
@@ -23,18 +29,29 @@ export class SentencesService {
 	}
 
 	async getWeeklySentences(date: string) {
-		const startDate = new Date(date);
-		startDate.setDate(startDate.getDate() - startDate.getDay());
-		const endDate = new Date(date);
-		endDate.setDate(endDate.getDate() - endDate.getDay() + 6);
+		const inputDate = new Date(date);
+
+		const startDate = new Date(inputDate);
+		startDate.setDate(inputDate.getDate() - inputDate.getDay());
+		const endDate = new Date(inputDate);
+		endDate.setDate(inputDate.getDate() - inputDate.getDay() + 6);
+
+		const startDateStr = startDate.toLocaleDateString('sv-SE', {
+			timeZone: 'Asia/Seoul',
+		});
+		const endDateStr = endDate.toLocaleDateString('sv-SE', {
+			timeZone: 'Asia/Seoul',
+		});
 
 		const sentences = await this.sentencesRepository.findByDateRange(
-			startDate.toISOString(),
-			endDate.toISOString(),
+			startDateStr,
+			endDateStr,
 		);
 
 		return sentences.map((sentence) => ({
-			date: sentence.createdAt.toISOString().split('T')[0],
+			date: new Date(sentence.createdAt).toLocaleDateString('sv-SE', {
+				timeZone: 'Asia/Seoul',
+			}),
 			sentence: sentence.sentence,
 			meaning: sentence.meaning,
 			vocab: sentence.vocabs.map((v) => ({
