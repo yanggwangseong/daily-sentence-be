@@ -16,7 +16,7 @@ export class SentencesController {
 		return sentences;
 	}
 
-	@Get('sentences/weeklys/:date')
+	@Get('/weeklys/:date')
 	getWeeklySentences(@Param('date') date: string) {
 		return this.sentencesService.getWeeklySentences(date);
 	}
