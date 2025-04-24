@@ -6,6 +6,7 @@ import path from 'path';
 import { TypeOrmModuleOptions } from '@APP/common/typeorm';
 import { SentencesModule } from './sentences/sentences.module';
 import { VisitsModule } from './visits/visits.module';
+import { SubscribersModule } from './subscribers/subscribers.module';
 
 @Module({
 	imports: [
@@ -18,6 +19,7 @@ import { VisitsModule } from './visits/visits.module';
 		TypeOrmModule.forRootAsync(TypeOrmModuleOptions),
 		SentencesModule,
 		VisitsModule,
+		SubscribersModule,
 	],
 	controllers: [],
 	providers: [],
