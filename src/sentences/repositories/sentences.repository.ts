@@ -26,7 +26,7 @@ export class SentencesRepository extends Repository<SentencesEntity> {
 			.createQueryBuilder('sentence')
 			.leftJoinAndSelect('sentence.vocabs', 'vocab')
 			.leftJoinAndSelect('sentence.video', 'video')
-			.where('sentence.createdAt BETWEEN :startDate AND :endDate', {
+			.where('DATE(sentence.createdAt) BETWEEN :startDate AND :endDate', {
 				startDate,
 				endDate,
 			})
