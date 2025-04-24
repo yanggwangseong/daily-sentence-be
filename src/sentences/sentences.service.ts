@@ -22,15 +22,26 @@ export class SentencesService {
 		};
 	}
 
-	getWeeklySentences(date: string) {
+	async getWeeklySentences(date: string) {
 		const startDate = new Date(date);
 		startDate.setDate(startDate.getDate() - startDate.getDay());
 		const endDate = new Date(date);
 		endDate.setDate(endDate.getDate() - endDate.getDay() + 6);
 
-		return this.sentencesRepository.findByDateRange(
+		const sentences = await this.sentencesRepository.findByDateRange(
 			startDate.toISOString(),
 			endDate.toISOString(),
 		);
+
+		return sentences.map((sentence) => ({
+			date: sentence.createdAt.toISOString().split('T')[0],
+			sentence: sentence.sentence,
+			meaning: sentence.meaning,
+			vocab: sentence.vocabs.map((v) => ({
+				word: v.word,
+				definition: v.definition,
+			})),
+			videoUrl: sentence.video?.videoUrl ?? '',
+		}));
 	}
 }
