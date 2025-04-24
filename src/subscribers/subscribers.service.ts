@@ -8,7 +8,10 @@ export class SubscribersService {
 	async create(email: string) {
 		const subscriber = await this.subscribersRepository.findByEmail(email);
 		if (subscriber) {
-			return subscriber;
+			return {
+				message: '이미 구독자입니다.',
+				error: true,
+			};
 		}
 
 		return this.subscribersRepository.createSubscriber(email);
