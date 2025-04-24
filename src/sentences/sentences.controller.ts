@@ -15,4 +15,9 @@ export class SentencesController {
 
 		return sentences;
 	}
+
+	@Get('sentences/weeklys/:date')
+	getWeeklySentences(@Param('date') date: string) {
+		return this.sentencesService.getWeeklySentences(date);
+	}
 }

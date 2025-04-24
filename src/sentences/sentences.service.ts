@@ -21,4 +21,16 @@ export class SentencesService {
 			videoUrl: sentence.video?.videoUrl ?? '',
 		};
 	}
+
+	getWeeklySentences(date: string) {
+		const startDate = new Date(date);
+		startDate.setDate(startDate.getDate() - startDate.getDay());
+		const endDate = new Date(date);
+		endDate.setDate(endDate.getDate() - endDate.getDay() + 6);
+
+		return this.sentencesRepository.findByDateRange(
+			startDate.toISOString(),
+			endDate.toISOString(),
+		);
+	}
 }

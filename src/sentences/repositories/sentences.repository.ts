@@ -20,4 +20,16 @@ export class SentencesRepository extends Repository<SentencesEntity> {
 			.where('DATE(sentence.createdAt) = :date', { date: datetime })
 			.getOne();
 	}
+
+	findByDateRange(startDate: string, endDate: string) {
+		return this.repository
+			.createQueryBuilder('sentence')
+			.leftJoinAndSelect('sentence.vocabs', 'vocab')
+			.leftJoinAndSelect('sentence.video', 'video')
+			.where('sentence.createdAt BETWEEN :startDate AND :endDate', {
+				startDate,
+				endDate,
+			})
+			.getMany();
+	}
 }
