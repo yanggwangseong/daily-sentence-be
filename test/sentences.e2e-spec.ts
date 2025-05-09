@@ -80,7 +80,6 @@ describe("Sentences", () => {
                 .get("/sentences/days/2024-03-20")
                 .expect(200);
 
-            console.log("****response****", response.body);
             const firstSentence = response.body;
             expect(firstSentence).toHaveProperty("sentence", "Hello World");
             expect(firstSentence).toHaveProperty("meaning", "안녕하세요");
