@@ -7,7 +7,8 @@
     "scripts": {
         "build": "nest build",
         "test": "jest",
-        "start:dev": "nest start --watch",
+        "start:dev": "cross-env NODE_ENV=development nest start --watch",
+        "start:prod": "cross-env NODE_ENV=production node dist/main",
         "lint": "eslint '*/**/*.ts'",
         "eslint:fix": "eslint src --fix",
         "prettier:fix": "prettier . -w",
@@ -34,6 +35,7 @@
         "discord.js": "^14.18.0",
         "dotenv": "^16.5.0",
         "mysql2": "^3.11.4",
+        "cross-env": "^7.0.3",
         "necord": "^6.8.8",
         "reflect-metadata": "^0.2.2",
         "rxjs": "^7.8.2",
