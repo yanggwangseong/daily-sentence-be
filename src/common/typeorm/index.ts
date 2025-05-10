@@ -1,13 +1,13 @@
 import { ConfigModule, ConfigService } from "@nestjs/config";
-
 import {
     TypeOrmModuleAsyncOptions,
     TypeOrmModuleOptions as TypeOrmModuleOptionsType,
 } from "@nestjs/typeorm";
 import { PoolOptions } from "mysql2";
-import { LogLevel } from "typeorm";
 import path from "path";
+import { LogLevel } from "typeorm";
 import { MysqlConnectionOptions } from "typeorm/driver/mysql/MysqlConnectionOptions";
+
 import {
     ENV_DB_DATABASE,
     ENV_DB_HOST,

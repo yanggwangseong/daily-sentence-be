@@ -15,3 +15,4 @@ services:
             - --skip-character-set-client-handshake
         extra_hosts:
             - "host.docker.internal:host-gateway"
+        

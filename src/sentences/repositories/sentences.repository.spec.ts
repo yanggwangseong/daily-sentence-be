@@ -1,7 +1,8 @@
 import { Test, TestingModule } from "@nestjs/testing";
-import { SentencesRepository } from "./sentences.repository";
 import { getRepositoryToken } from "@nestjs/typeorm";
+
 import { SentencesEntity } from "../entities/sentences.entity";
+import { SentencesRepository } from "./sentences.repository";
 
 const mockSentencesRepository = {
     createQueryBuilder: jest.fn(),

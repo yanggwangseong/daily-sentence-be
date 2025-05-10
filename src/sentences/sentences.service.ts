@@ -1,4 +1,5 @@
 import { Injectable } from "@nestjs/common";
+
 import { SentencesRepository } from "./repositories/sentences.repository";
 
 @Injectable()

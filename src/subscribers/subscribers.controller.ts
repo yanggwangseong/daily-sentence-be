@@ -1,6 +1,7 @@
 import { ConflictException, Controller, Param, Post } from "@nestjs/common";
-import { SubscribersService } from "./subscribers.service";
+
 import { EmailPipe } from "./pipes/email.pipe";
+import { SubscribersService } from "./subscribers.service";
 
 @Controller("subscribers")
 export class SubscribersController {

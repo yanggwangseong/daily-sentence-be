@@ -1,5 +1,5 @@
-import { Backend } from './application';
+import { Backend } from "./application";
 
 void Backend.start({
-	cors: { credentials: true },
+    cors: { credentials: true },
 });

@@ -1,4 +1,5 @@
 import { Injectable } from "@nestjs/common";
+
 import { SubscribersRepository } from "./repositories/subscribers.repository";
 
 @Injectable()

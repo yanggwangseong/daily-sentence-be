@@ -1,7 +1,8 @@
+import { NotFoundException } from "@nestjs/common";
 import { Test, TestingModule } from "@nestjs/testing";
+
 import { SentencesController } from "./sentences.controller";
 import { SentencesService } from "./sentences.service";
-import { NotFoundException } from "@nestjs/common";
 
 // Service 모킹
 const mockSentencesService = {

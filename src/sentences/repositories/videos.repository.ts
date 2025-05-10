@@ -1,7 +1,8 @@
 import { Injectable } from "@nestjs/common";
-import { VideosEntity } from "../entities/videos.entity";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
+
+import { VideosEntity } from "../entities/videos.entity";
 
 @Injectable()
 export class VideosRepository extends Repository<VideosEntity> {
