@@ -1,4 +1,5 @@
 import { Controller, Get, NotFoundException, Param } from "@nestjs/common";
+
 import { SentencesService } from "./sentences.service";
 
 @Controller("sentences")

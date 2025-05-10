@@ -1,22 +1,21 @@
-import { Injectable } from '@nestjs/common';
-import { Repository } from 'typeorm';
-import { SubscribersEntity } from '../entities/subscribers.entity';
-import { InjectRepository } from '@nestjs/typeorm';
+import { Injectable } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+
+import { SubscribersEntity } from "../entities/subscribers.entity";
 
 @Injectable()
-export class SubscribersRepository extends Repository<SubscribersEntity> {
-	constructor(
-		@InjectRepository(SubscribersEntity)
-		repository: Repository<SubscribersEntity>,
-	) {
-		super(repository.target, repository.manager, repository.queryRunner);
-	}
+export class SubscribersRepository {
+    constructor(
+        @InjectRepository(SubscribersEntity)
+        private readonly repository: Repository<SubscribersEntity>,
+    ) {}
 
-	async findByEmail(email: string) {
-		return this.findOne({ where: { email } });
-	}
+    findByEmail(email: string) {
+        return this.repository.findOne({ where: { email } });
+    }
 
-	async createSubscriber(email: string) {
-		return this.save({ email });
-	}
+    createSubscriber(email: string) {
+        return this.repository.save({ email });
+    }
 }

@@ -1,0 +1,76 @@
+name: 'Unit Test & E2E Test'
+on:
+    pull_request:
+        branches:
+            - develop
+            - main
+jobs:
+  unit-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 22.14.0
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Run Unit Tests
+        run: npm run test:unit
+
+      - name: Close PR if Tests Fail
+        if: failure()
+        run: |
+          PR_NUMBER=$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")
+          echo "❌ Unit 테스트 실패! PR #$PR_NUMBER을 닫습니다."
+          curl -X PATCH -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+              -H "Accept: application/vnd.github.v3+json" \
+              https://api.github.com/repos/${{ github.repository }}/pulls/$PR_NUMBER \
+              -d '{"state":"closed"}'
+
+  e2e-test:
+    needs: unit-test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set up Timezone to GMT+9
+        run: sudo timedatectl set-timezone Asia/Seoul
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 22.14.0
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Create .test.env
+        run: |
+          touch .test.env
+          echo "DB_TYPE=${{ secrets.TEST_DB_TYPE }}" >> .test.env
+          echo "DB_HOST=${{ secrets.TEST_DB_HOST }}" >> .test.env
+          echo "DB_PORT=${{ secrets.TEST_DB_PORT }}" >> .test.env
+          echo "DB_USERNAME=${{ secrets.TEST_DB_USERNAME }}" >> .test.env
+          echo "DB_PASSWORD=${{ secrets.TEST_DB_PASSWORD }}" >> .test.env
+          echo "DB_DATABASE=${{ secrets.TEST_DB_DATABASE }}" >> .test.env
+          echo "DB_SYNCHRONIZE=${{ secrets.TEST_DB_SYNCHRONIZE }}" >> .test.env
+          echo "SERVER_PORT=${{ secrets.TEST_SERVER_PORT }}" >> .test.env
+
+      - name: Run E2E Tests
+        run: npm run test:db:e2e
+
+      - name: Close PR if Tests Fail
+        if: failure()
+        run: |
+          PR_NUMBER=$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")
+          echo "❌ E2E 테스트 실패! PR #$PR_NUMBER을 닫습니다."
+          curl -X PATCH -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+              -H "Accept: application/vnd.github.v3+json" \
+              https://api.github.com/repos/${{ github.repository }}/pulls/$PR_NUMBER \
+              -d '{"state":"closed"}'
