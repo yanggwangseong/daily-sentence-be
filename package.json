@@ -12,7 +12,11 @@
         "eslint:fix": "eslint src --fix",
         "prettier:fix": "prettier . -w",
         "test:cov": "jest --coverage",
+        "test:unit": "jest --config jest.config.js",
         "test:e2e": "jest --config test/jest-e2e.json",
+        "test:db:start": "docker compose --env-file .test.env -f docker-compose.test.yml up -d",
+        "test:db:stop": "docker compose -f docker-compose.test.yml down -v",
+        "test:db:e2e": "npm run test:db:start && sleep 4 && npm run test:e2e -- --runInBand --verbose && npm run test:db:stop",
         "prepare": "husky"
     },
     "author": {

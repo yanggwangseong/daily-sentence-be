@@ -1,13 +1,15 @@
 import { INestApplication } from "@nestjs/common";
 import { Test, TestingModule } from "@nestjs/testing";
 import request from "supertest";
-import { DataSource } from "typeorm";
+import { DataSource, Repository } from "typeorm";
 
 import { AppModule } from "@APP/app.module";
+import { SubscribersEntity } from "@APP/subscribers/entities/subscribers.entity";
 
 describe("Subscribers", () => {
     let app: INestApplication;
     let dataSource: DataSource;
+    let subscribersRepository: Repository<SubscribersEntity>;
 
     beforeAll(async () => {
         const module: TestingModule = await Test.createTestingModule({
@@ -16,6 +18,8 @@ describe("Subscribers", () => {
 
         app = module.createNestApplication();
         dataSource = app.get<DataSource>(DataSource);
+        subscribersRepository = dataSource.getRepository(SubscribersEntity);
+
         await app.init();
     });
 
@@ -84,6 +88,11 @@ describe("Subscribers", () => {
     });
 
     afterAll(async () => {
+        // 테스트 데이터 정리
+        await subscribersRepository.delete({});
+
+        // 데이터베이스 연결 종료 및 앱 종료
+        await dataSource.destroy();
         await app.close();
     });
 });

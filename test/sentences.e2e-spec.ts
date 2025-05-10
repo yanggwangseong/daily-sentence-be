@@ -129,6 +129,13 @@ describe("Sentences", () => {
     });
 
     afterAll(async () => {
+        // 테스트 데이터 정리
+        await vocabsRepository.delete({});
+        await sentencesRepository.delete({});
+        await videosRepository.delete({});
+
+        // 데이터베이스 연결 종료 및 앱 종료
+        await dataSource.destroy();
         await app.close();
     });
 });
