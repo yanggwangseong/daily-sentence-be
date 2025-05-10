@@ -1,9 +1,9 @@
-import request from "supertest";
-import { AppModule } from "@APP/app.module";
 import { INestApplication } from "@nestjs/common";
 import { Test, TestingModule } from "@nestjs/testing";
+import request from "supertest";
 import { DataSource, Repository } from "typeorm";
 
+import { AppModule } from "@APP/app.module";
 import { SentencesEntity } from "@APP/sentences/entities/sentences.entity";
 import { VideosEntity } from "@APP/sentences/entities/videos.entity";
 import { VocabsEntity } from "@APP/sentences/entities/vocabs.entity";

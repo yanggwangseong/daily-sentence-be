@@ -1,8 +1,9 @@
 import { Test, TestingModule } from "@nestjs/testing";
-import { SubscribersRepository } from "./subscribers.repository";
 import { getRepositoryToken } from "@nestjs/typeorm";
-import { SubscribersEntity } from "../entities/subscribers.entity";
 import { Repository } from "typeorm";
+
+import { SubscribersEntity } from "../entities/subscribers.entity";
+import { SubscribersRepository } from "./subscribers.repository";
 
 const mockRepository = {
     findOne: jest.fn(),

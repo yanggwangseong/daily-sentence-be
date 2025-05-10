@@ -1,8 +1,9 @@
+import { ConflictException } from "@nestjs/common";
 import { Test, TestingModule } from "@nestjs/testing";
+
+import { SubscribersEntity } from "./entities/subscribers.entity";
 import { SubscribersController } from "./subscribers.controller";
 import { SubscribersService } from "./subscribers.service";
-import { SubscribersEntity } from "./entities/subscribers.entity";
-import { ConflictException } from "@nestjs/common";
 
 // Service 모킹
 const mockSubscribersService = {

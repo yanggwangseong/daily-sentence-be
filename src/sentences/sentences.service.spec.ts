@@ -1,10 +1,11 @@
-import { getRepositoryToken } from "@nestjs/typeorm";
-import { SentencesService } from "./sentences.service";
 import { Test, TestingModule } from "@nestjs/testing";
+import { getRepositoryToken } from "@nestjs/typeorm";
+
 import { SentencesEntity } from "./entities/sentences.entity";
-import { SentencesRepository } from "./repositories/sentences.repository";
-import { VocabsEntity } from "./entities/vocabs.entity";
 import { VideosEntity } from "./entities/videos.entity";
+import { VocabsEntity } from "./entities/vocabs.entity";
+import { SentencesRepository } from "./repositories/sentences.repository";
+import { SentencesService } from "./sentences.service";
 
 // Repository 모킹
 const mockSentencesRepository = {

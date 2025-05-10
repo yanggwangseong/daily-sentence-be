@@ -1,8 +1,9 @@
-import request from "supertest";
-import { AppModule } from "@APP/app.module";
 import { INestApplication } from "@nestjs/common";
 import { Test, TestingModule } from "@nestjs/testing";
+import request from "supertest";
 import { DataSource } from "typeorm";
+
+import { AppModule } from "@APP/app.module";
 
 describe("Subscribers", () => {
     let app: INestApplication;

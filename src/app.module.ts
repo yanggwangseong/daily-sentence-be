@@ -4,9 +4,10 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import path from "path";
 
 import { TypeOrmModuleOptions } from "@APP/common/typeorm";
+
 import { SentencesModule } from "./sentences/sentences.module";
-import { VisitsModule } from "./visits/visits.module";
 import { SubscribersModule } from "./subscribers/subscribers.module";
+import { VisitsModule } from "./visits/visits.module";
 
 @Module({
     imports: [
