@@ -1,16 +1,13 @@
-name: AWS deploy
+name: AWS CodeDeploy ECS Deployment
 
 on:
   push:
     branches:
-      - disabled
-      
+      - main
 
 jobs:
   deploy:
-    name: Deploy
     runs-on: ubuntu-latest
-    environment: production
 
     steps:
       - name: Checkout
@@ -27,48 +24,29 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Build, tag, and push image to Amazon ECR
-        id: build-image
+      - name: Build and push to ECR
         uses: docker/build-push-action@v3
-        env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: ${{ secrets.AWS_CONTAINER_REGISTRY }}
-          IMAGE_TAG: latest
-        
         with:
-          file: ./Dockerfile
           context: .
+          file: ./Dockerfile
           push: true
           tags: ${{ steps.login-ecr.outputs.registry }}/${{ secrets.AWS_CONTAINER_REGISTRY }}:latest
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-          secrets: |
-            GIT_AUTH_TOKEN=${{ secrets.GIT_TOKEN }}
 
-      - name: Build Image Path
-        id: image-path
-        env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: ${{ secrets.AWS_CONTAINER_REGISTRY }}
-          IMAGE_TAG: latest
+      - name: Update AppSpec and Task Definition (inline or templated)
         run: |
-          echo "ecs-deploy=${{ steps.login-ecr.outputs.registry }}/${{ secrets.AWS_CONTAINER_REGISTRY }}:latest" >> $GITHUB_OUTPUT
+          # 이미지 태그를 반영한 task definition 파일 생성
+          sed "s|<IMAGE_URI>|${{ steps.login-ecr.outputs.registry }}/${{ secrets.AWS_CONTAINER_REGISTRY }}:latest|g" taskdef-template.json > taskdef.json
+          cp appspec-template.yaml appspec.yaml
 
-      - name: Download task definition
+      - name: Push artifacts to S3 (CodeDeploy 사용 조건)
         run: |
-          aws ecs describe-task-definition \
-            --task-definition ${{secrets.TASK_DEFINITION_NAME}} \
-            --query taskDefinition \
-            > ecs-deploy-task-definition.json
+          aws s3 cp taskdef.json s3://${{ secrets.CODEDEPLOY_BUCKET }}/ecs/taskdef.json
+          aws s3 cp appspec.yaml s3://${{ secrets.CODEDEPLOY_BUCKET }}/ecs/appspec.yaml
 
-      - name: Deploy Amazon ECS task definition
-        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
-        with:
-          task-definition: ecs-deploy-task-definition.json
-          service: ${{secrets.ECS_SERVICE}}
-          cluster: ${{secrets.ECS_CLUSTER}}
-          wait-for-service-stability: true
-
+      - name: Trigger CodeDeploy
+        run: |
+          aws deploy create-deployment \
+            --application-name ${{ secrets.CODEDEPLOY_APP_NAME }} \
+            --deployment-group-name ${{ secrets.CODEDEPLOY_GROUP_NAME }} \
+            --deployment-config-name CodeDeployDefault.ECSAllAtOnce \
+            --s3-location bucket=${{ secrets.CODEDEPLOY_BUCKET }},bundleType=YAML,key=ecs/appspec.yaml
