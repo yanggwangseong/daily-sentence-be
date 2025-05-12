@@ -1,0 +1,52 @@
+name: AWS CodeDeploy ECS Deployment
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build and push to ECR
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ steps.login-ecr.outputs.registry }}/${{ secrets.AWS_CONTAINER_REGISTRY }}:latest
+
+      - name: Update AppSpec and Task Definition (inline or templated)
+        run: |
+          # 이미지 태그를 반영한 task definition 파일 생성
+          sed "s|<IMAGE_URI>|${{ steps.login-ecr.outputs.registry }}/${{ secrets.AWS_CONTAINER_REGISTRY }}:latest|g" taskdef-template.json > taskdef.json
+          cp appspec-template.yaml appspec.yaml
+
+      - name: Push artifacts to S3 (CodeDeploy 사용 조건)
+        run: |
+          aws s3 cp taskdef.json s3://${{ secrets.CODEDEPLOY_BUCKET }}/ecs/taskdef.json
+          aws s3 cp appspec.yaml s3://${{ secrets.CODEDEPLOY_BUCKET }}/ecs/appspec.yaml
+
+      - name: Trigger CodeDeploy
+        run: |
+          aws deploy create-deployment \
+            --application-name ${{ secrets.CODEDEPLOY_APP_NAME }} \
+            --deployment-group-name ${{ secrets.CODEDEPLOY_GROUP_NAME }} \
+            --deployment-config-name CodeDeployDefault.ECSAllAtOnce \
+            --s3-location bucket=${{ secrets.CODEDEPLOY_BUCKET }},bundleType=YAML,key=ecs/appspec.yaml
