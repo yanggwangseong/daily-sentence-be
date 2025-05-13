@@ -5,6 +5,7 @@ import path from "path";
 
 import { TypeOrmModuleOptions } from "@APP/common/typeorm";
 
+import { HealthController } from "./health.controller";
 import { SentencesModule } from "./sentences/sentences.module";
 import { SubscribersModule } from "./subscribers/subscribers.module";
 import { VisitsModule } from "./visits/visits.module";
@@ -22,7 +23,7 @@ import { VisitsModule } from "./visits/visits.module";
         VisitsModule,
         SubscribersModule,
     ],
-    controllers: [],
+    controllers: [HealthController],
     providers: [],
     exports: [],
 })

@@ -29,8 +29,6 @@ export namespace Backend {
             process.exit(0);
         });
 
-        app.setGlobalPrefix("api");
-
         return app;
     };
 

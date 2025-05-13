@@ -1,0 +1,17 @@
+{
+    "version": 0.0,
+    "Resources": [
+        {
+            "TargetService": {
+                "Type": "AWS::ECS::Service",
+                "Properties": {
+                    "TaskDefinition": "arn:aws:ecs:ap-northeast-2:460293377581:task-definition/EC2-ECS-ECR",
+                    "LoadBalancerInfo": {
+                        "ContainerName": "nestjs-app",
+                        "ContainerPort": 4000
+                    }
+                }
+            }
+        }
+    ]
+}
