@@ -31,10 +31,7 @@ export const TypeOrmModuleOptions: TypeOrmModuleAsyncOptions = {
             username: configService.get(ENV_DB_USERNAME) || "root",
             database: configService.get(ENV_DB_DATABASE) || "test",
             password: configService.get(ENV_DB_PASSWORD) || "test",
-            entities: [
-                path.resolve(process.cwd(), "src/**/*.entity.{js,ts}"),
-                path.resolve(process.cwd(), "dist/**/*.entity.{js,ts}"),
-            ],
+            entities: [path.join(process.cwd(), "dist/**/*.entity.js")],
             synchronize: configService.get<boolean>(ENV_DB_SYNCHRONIZE) || true,
             extra: {
                 connectionLimit: 50,
