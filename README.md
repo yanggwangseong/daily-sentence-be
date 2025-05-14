@@ -42,6 +42,60 @@
 - prepare-commit-msg를 활용한 issue 번호 또는 티켓 번호를 커밋 메세지에 자동 삽입
 - github actions를 활용한 PR생성시 Unit Test 및 E2E 테스트 자동화
 
+```js
+// prettier
+module.exports = {
+    printWidth: 80, // 한 줄 최대 길이
+    semi: true, // 세미콜론 사용
+    tabWidth: 4, // 탭 크기 (4칸)
+    trailingComma: "all", // 모든 곳에 trailing comma 추가
+    plugins: ["@trivago/prettier-plugin-sort-imports"], // import 정렬 플러그인
+    importOrder: ["<THIRD_PARTY_MODULES>", "^@APP/(.*)$", "^[./]"], // import 순서: 외부 라이브러리 → @APP 경로 → 상대 경로
+    importOrderSeparation: true, // import 그룹 사이에 빈 줄 추가
+    importOrderSortSpecifiers: true, // import 내 항목들 정렬
+    importOrderParserPlugins: ["decorators-legacy", "typescript"], // 파서 플러그인 (데코레이터, TypeScript)
+};
+```
+
+```js
+// eslint
+export default [
+    // TypeScript ESLint 추천 설정 확장
+    ...compat.extends("plugin:@typescript-eslint/recommended"),
+    {
+        plugins: {
+            "@typescript-eslint": typescriptEslint,
+        },
+
+        // 언어 파서 및 옵션 설정
+        languageOptions: {
+            parser: tsParser, // TypeScript 파서 사용
+            ecmaVersion: 2020, // ECMAScript 버전
+            sourceType: "script", // 모듈 타입 (script/module)
+
+            parserOptions: {
+                project: ["tsconfig.json"], // TypeScript 프로젝트 설정 파일
+            },
+        },
+
+        // ESLint 규칙 설정
+        rules: {
+            "@typescript-eslint/interface-name-prefix": "off", // 인터페이스 이름 접두사 규칙 끄기
+            "@typescript-eslint/explicit-function-return-type": "off", // 함수 반환 타입 명시 강제 끄기
+            "@typescript-eslint/explicit-module-boundary-types": "off", // 모듈 경계 타입 명시 강제 끄기
+            "@typescript-eslint/no-empty-interface": "off", // 빈 인터페이스 허용
+            "@typescript-eslint/no-explicit-any": "off", // any 타입 사용 허용
+            "@typescript-eslint/no-floating-promises": "error", // 처리되지 않은 Promise를 에러로 처리
+            "@typescript-eslint/no-inferrable-types": "off", // 추론 가능한 타입 명시 허용
+            "@typescript-eslint/no-namespace": "off", // namespace 사용 허용
+            "@typescript-eslint/no-empty-function": "off", // 빈 함수 허용
+            "@typescript-eslint/only-throw-error": "error", // Error 객체만 throw 하도록 강제
+            "@typescript-eslint/no-unused-vars": "warn", // 사용하지 않는 변수에 대해 경고
+        },
+    },
+];
+```
+
 ```bash
 # prepare-commit-msg
 # 인자값 가져오기
