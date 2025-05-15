@@ -1,15 +1,20 @@
-import { Injectable } from "@nestjs/common";
+import { Inject, Injectable } from "@nestjs/common";
 
-import { SubscribersRepository } from "./repositories/subscribers.repository";
+import {
+    ISubscribersRepository,
+    SUBSCRIBERS_REPOSITORY_TOKEN,
+} from "./repositories/subscribers.repository.interface";
 
 @Injectable()
 export class SubscribersService {
     constructor(
-        private readonly subscribersRepository: SubscribersRepository,
+        @Inject(SUBSCRIBERS_REPOSITORY_TOKEN)
+        private readonly subscribersRepository: ISubscribersRepository,
     ) {}
 
     async create(email: string) {
         const subscriber = await this.subscribersRepository.findByEmail(email);
+
         if (subscriber) {
             return {
                 message: "이미 구독자입니다.",

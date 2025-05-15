@@ -4,7 +4,7 @@ import { getRepositoryToken } from "@nestjs/typeorm";
 import { SentencesEntity } from "./entities/sentences.entity";
 import { VideosEntity } from "./entities/videos.entity";
 import { VocabsEntity } from "./entities/vocabs.entity";
-import { SentencesRepository } from "./repositories/sentences.repository";
+import { SENTENCES_REPOSITORY_TOKEN } from "./repositories/sentences.repository.interface";
 import { SentencesService } from "./sentences.service";
 
 // Repository 모킹
@@ -21,7 +21,7 @@ describe("sentencesService", () => {
             providers: [
                 SentencesService,
                 {
-                    provide: SentencesRepository,
+                    provide: SENTENCES_REPOSITORY_TOKEN,
                     useValue: mockSentencesRepository,
                 },
                 {

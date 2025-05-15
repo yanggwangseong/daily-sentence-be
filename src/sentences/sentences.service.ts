@@ -1,10 +1,16 @@
-import { Injectable } from "@nestjs/common";
+import { Inject, Injectable } from "@nestjs/common";
 
-import { SentencesRepository } from "./repositories/sentences.repository";
+import {
+    ISentencesRepository,
+    SENTENCES_REPOSITORY_TOKEN,
+} from "./repositories/sentences.repository.interface";
 
 @Injectable()
 export class SentencesService {
-    constructor(private readonly sentencesRepository: SentencesRepository) {}
+    constructor(
+        @Inject(SENTENCES_REPOSITORY_TOKEN)
+        private readonly sentencesRepository: ISentencesRepository,
+    ) {}
 
     async getSentences(date: string) {
         const koreanDate = new Date(date).toLocaleDateString("sv-SE", {

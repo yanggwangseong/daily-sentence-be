@@ -2,7 +2,7 @@ import { Test, TestingModule } from "@nestjs/testing";
 import { getRepositoryToken } from "@nestjs/typeorm";
 
 import { SubscribersEntity } from "./entities/subscribers.entity";
-import { SubscribersRepository } from "./repositories/subscribers.repository";
+import { SUBSCRIBERS_REPOSITORY_TOKEN } from "./repositories/subscribers.repository.interface";
 import { SubscribersService } from "./subscribers.service";
 
 // Repository 모킹
@@ -19,7 +19,7 @@ describe("subscribersService", () => {
             providers: [
                 SubscribersService,
                 {
-                    provide: SubscribersRepository,
+                    provide: SUBSCRIBERS_REPOSITORY_TOKEN,
                     useValue: mockSubscribersRepository,
                 },
                 {

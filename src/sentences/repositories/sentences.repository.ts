@@ -3,17 +3,16 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 
 import { SentencesEntity } from "../entities/sentences.entity";
+import { ISentencesRepository } from "./sentences.repository.interface";
 
 @Injectable()
-export class SentencesRepository extends Repository<SentencesEntity> {
+export class SentencesRepository implements ISentencesRepository {
     constructor(
         @InjectRepository(SentencesEntity)
         private readonly repository: Repository<SentencesEntity>,
-    ) {
-        super(repository.target, repository.manager, repository.queryRunner);
-    }
+    ) {}
 
-    findOneByDate(datetime: string) {
+    findOneByDate(datetime: string): Promise<SentencesEntity | null> {
         return this.repository
             .createQueryBuilder("sentence")
             .leftJoinAndSelect("sentence.vocabs", "vocab")
@@ -22,7 +21,10 @@ export class SentencesRepository extends Repository<SentencesEntity> {
             .getOne();
     }
 
-    findByDateRange(startDate: string, endDate: string) {
+    findByDateRange(
+        startDate: string,
+        endDate: string,
+    ): Promise<SentencesEntity[]> {
         return this.repository
             .createQueryBuilder("sentence")
             .leftJoinAndSelect("sentence.vocabs", "vocab")
