@@ -45,9 +45,7 @@ describe("sentencesController", () => {
                 videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
             };
 
-            jest.spyOn(mockSentencesService, "getSentences").mockResolvedValue(
-                mockSentence,
-            );
+            mockSentencesService.getSentences.mockResolvedValue(mockSentence);
 
             const result = await controller.getSentences("2021-01-01");
 
@@ -55,9 +53,7 @@ describe("sentencesController", () => {
         });
 
         it("should throw NotFoundException when no sentence is found for the given date", async () => {
-            jest.spyOn(mockSentencesService, "getSentences").mockResolvedValue(
-                null,
-            );
+            mockSentencesService.getSentences.mockResolvedValue(null);
 
             await expect(controller.getSentences("2021-01-01")).rejects.toThrow(
                 NotFoundException,
@@ -80,10 +76,9 @@ describe("sentencesController", () => {
                 },
             ];
 
-            jest.spyOn(
-                mockSentencesService,
-                "getWeeklySentences",
-            ).mockResolvedValue(mockSentences);
+            mockSentencesService.getWeeklySentences.mockResolvedValue(
+                mockSentences,
+            );
 
             const result = await controller.getWeeklySentences("2021-01-01");
 

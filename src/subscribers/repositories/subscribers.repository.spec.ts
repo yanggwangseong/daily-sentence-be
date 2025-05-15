@@ -46,7 +46,7 @@ describe("SubscribersRepository", () => {
                 updatedAt: new Date(),
             } as SubscribersEntity;
 
-            jest.spyOn(repository, "findOne").mockResolvedValue(mockSubscriber);
+            mockRepository.findOne.mockResolvedValue(mockSubscriber);
 
             const result =
                 await subscribersRepository.findByEmail("test@test.com");
@@ -58,7 +58,7 @@ describe("SubscribersRepository", () => {
         });
 
         it("should return null if no subscriber is found", async () => {
-            jest.spyOn(repository, "findOne").mockResolvedValue(null);
+            mockRepository.findOne.mockResolvedValue(null);
 
             const result =
                 await subscribersRepository.findByEmail("test@test.com");
@@ -79,7 +79,7 @@ describe("SubscribersRepository", () => {
                 updatedAt: new Date(),
             } satisfies SubscribersEntity;
 
-            jest.spyOn(repository, "save").mockResolvedValue(mockSubscriber);
+            mockRepository.save.mockResolvedValue(mockSubscriber);
 
             const result =
                 await subscribersRepository.createSubscriber("test@test.com");

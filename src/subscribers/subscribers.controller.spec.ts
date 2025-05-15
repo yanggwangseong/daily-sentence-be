@@ -3,7 +3,7 @@ import { Test, TestingModule } from "@nestjs/testing";
 
 import { SubscribersEntity } from "./entities/subscribers.entity";
 import { SubscribersController } from "./subscribers.controller";
-import { SubscribersService } from "./subscribers.service";
+import { SUBSCRIBERS_SERVICE_TOKEN } from "./subscribers.service.interface";
 
 // Service 모킹
 const mockSubscribersService = {
@@ -17,9 +17,8 @@ describe("SubscribersController", () => {
         const module: TestingModule = await Test.createTestingModule({
             controllers: [SubscribersController],
             providers: [
-                SubscribersService,
                 {
-                    provide: SubscribersService,
+                    provide: SUBSCRIBERS_SERVICE_TOKEN,
                     useValue: mockSubscribersService,
                 },
             ],

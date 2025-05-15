@@ -49,10 +49,9 @@ describe("SentencesRepository", () => {
                 getOne: jest.fn().mockResolvedValue(mockSentence),
             };
 
-            jest.spyOn(
-                mockSentencesRepository,
-                "createQueryBuilder",
-            ).mockReturnValue(queryBuilderMock as any);
+            mockSentencesRepository.createQueryBuilder.mockReturnValue(
+                queryBuilderMock as any,
+            );
 
             const sentence =
                 await sentencesRepository.findOneByDate("2021-01-01");
@@ -107,10 +106,9 @@ describe("SentencesRepository", () => {
                 getMany: jest.fn().mockResolvedValue(mockSentences),
             };
 
-            jest.spyOn(
-                mockSentencesRepository,
-                "createQueryBuilder",
-            ).mockReturnValue(queryBuilderMock as any);
+            mockSentencesRepository.createQueryBuilder.mockReturnValue(
+                queryBuilderMock as any,
+            );
 
             const sentences = await sentencesRepository.findByDateRange(
                 "2021-01-01",

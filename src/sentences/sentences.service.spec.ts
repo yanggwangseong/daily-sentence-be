@@ -63,10 +63,7 @@ describe("sentencesService", () => {
                 },
             };
 
-            jest.spyOn(
-                mockSentencesRepository,
-                "findOneByDate",
-            ).mockResolvedValue(mockSentence);
+            mockSentencesRepository.findOneByDate.mockReturnValue(mockSentence);
 
             const result = await sentencesService.getSentences("2021-01-01");
 
@@ -80,10 +77,7 @@ describe("sentencesService", () => {
         });
 
         it("should return null when no sentence is found for the given date", async () => {
-            jest.spyOn(
-                mockSentencesRepository,
-                "findOneByDate",
-            ).mockResolvedValue(null);
+            mockSentencesRepository.findOneByDate.mockReturnValue(null);
 
             const result = await sentencesService.getSentences("2021-01-01");
 
@@ -124,10 +118,9 @@ describe("sentencesService", () => {
                 },
             ];
 
-            jest.spyOn(
-                mockSentencesRepository,
-                "findByDateRange",
-            ).mockResolvedValue(mockSentences);
+            mockSentencesRepository.findByDateRange.mockReturnValue(
+                mockSentences,
+            );
 
             const result =
                 await sentencesService.getWeeklySentences("2021-01-01");
