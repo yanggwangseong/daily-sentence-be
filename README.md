@@ -1,9 +1,12 @@
 ## Daily-sentence
 
-- 📝 : 블로그 글
-- 📂 : Github Repository
+### 개요
 
-## Daily-sentence Front
+영어학습을위한 매일 영어 한문장과 관련 유튜브 쇼츠 영상을 제공하고 이메일 구독을 통한 1주일간의 정보를 제공하는 뉴스레터 기능을 제공하는 프로젝트 입니다.
+
+### 프로젝트 목표
+
+시장 반응을 빠르게 확인하기 위해 최소 기능 제품(MVP)을 빠르게 개발·출시하고, 여러곳에 개별적인 홍보링크를 통해서 유입된 퍼널(Funnel) 등이 어떤 경로에서 유입 되었는지, 이탈율은 어떻게 되는지를 추적하고 이를 개선 해나가고 CTA(Call to Action)을 통해 구독율을 증가 시키기 위한 프로젝트 입니다.
 
 - [📂 Front Repository](https://github.com/yanggwangseong/daily-sentence-fe)
 
@@ -16,24 +19,24 @@
 
 ### InfraStructure
 
-<p align="center">
-  <div align="center"><img src="https://i.postimg.cc/j59NzyGx/AWS-Architecture-drawio.png" width="80%"/></div>
+<p align="left">
+  <div align="left"><img src="https://i.postimg.cc/j59NzyGx/AWS-Architecture-drawio.png" width="80%"/></div>
 </p>
 
 ---
 
 ### CI/CD
 
-<p align="center">
-  <div align="center"><img src="https://i.postimg.cc/TYCzY2Sc/aws-ci-cd-drawio.png" width="80%"/></div>
+<p align="left">
+  <div align="left"><img src="https://i.postimg.cc/TYCzY2Sc/aws-ci-cd-drawio.png" width="80%"/></div>
 </p>
 
 ---
 
 ### EventBridge Lambda SES
 
-<p align="center">
-  <div align="center"><img src="https://i.postimg.cc/jjmpy8Q3/aws-event-bridge-lambda-ses-drawio.png" width="60%"/></div>
+<p align="left">
+  <div align="left"><img src="https://i.postimg.cc/jjmpy8Q3/aws-event-bridge-lambda-ses-drawio.png" width="60%"/></div>
 </p>
 
 ## Code Convention with Auto-formatting
@@ -42,178 +45,69 @@
 - prepare-commit-msg를 활용한 issue 번호 또는 티켓 번호를 커밋 메세지에 자동 삽입
 - github actions를 활용한 PR생성시 Unit Test 및 E2E 테스트 자동화
 
-```js
-// prettier
-module.exports = {
-    printWidth: 80, // 한 줄 최대 길이
-    semi: true, // 세미콜론 사용
-    tabWidth: 4, // 탭 크기 (4칸)
-    trailingComma: "all", // 모든 곳에 trailing comma 추가
-    plugins: ["@trivago/prettier-plugin-sort-imports"], // import 정렬 플러그인
-    importOrder: ["<THIRD_PARTY_MODULES>", "^@APP/(.*)$", "^[./]"], // import 순서: 외부 라이브러리 → @APP 경로 → 상대 경로
-    importOrderSeparation: true, // import 그룹 사이에 빈 줄 추가
-    importOrderSortSpecifiers: true, // import 내 항목들 정렬
-    importOrderParserPlugins: ["decorators-legacy", "typescript"], // 파서 플러그인 (데코레이터, TypeScript)
-};
-```
+[Auto Test & Auto Code Convention and Formatting](https://github.com/yanggwangseong/daily-sentence-be/wiki/Auto-Test-&-Auto-Code-Convention-and-Formatting)
 
-```js
-// eslint
-export default [
-    // TypeScript ESLint 추천 설정 확장
-    ...compat.extends("plugin:@typescript-eslint/recommended"),
-    {
-        plugins: {
-            "@typescript-eslint": typescriptEslint,
-        },
-
-        // 언어 파서 및 옵션 설정
-        languageOptions: {
-            parser: tsParser, // TypeScript 파서 사용
-            ecmaVersion: 2020, // ECMAScript 버전
-            sourceType: "script", // 모듈 타입 (script/module)
-
-            parserOptions: {
-                project: ["tsconfig.json"], // TypeScript 프로젝트 설정 파일
-            },
-        },
-
-        // ESLint 규칙 설정
-        rules: {
-            "@typescript-eslint/interface-name-prefix": "off", // 인터페이스 이름 접두사 규칙 끄기
-            "@typescript-eslint/explicit-function-return-type": "off", // 함수 반환 타입 명시 강제 끄기
-            "@typescript-eslint/explicit-module-boundary-types": "off", // 모듈 경계 타입 명시 강제 끄기
-            "@typescript-eslint/no-empty-interface": "off", // 빈 인터페이스 허용
-            "@typescript-eslint/no-explicit-any": "off", // any 타입 사용 허용
-            "@typescript-eslint/no-floating-promises": "error", // 처리되지 않은 Promise를 에러로 처리
-            "@typescript-eslint/no-inferrable-types": "off", // 추론 가능한 타입 명시 허용
-            "@typescript-eslint/no-namespace": "off", // namespace 사용 허용
-            "@typescript-eslint/no-empty-function": "off", // 빈 함수 허용
-            "@typescript-eslint/only-throw-error": "error", // Error 객체만 throw 하도록 강제
-            "@typescript-eslint/no-unused-vars": "warn", // 사용하지 않는 변수에 대해 경고
-        },
-    },
-];
-```
-
-```bash
-# prepare-commit-msg
-# 인자값 가져오기
-COMMIT_MSG_FILE=$1
-COMMIT_SOURCE=$2
-SHA1=$3
-
-# 자동 머지 커밋 메시지 등은 건너뜁니다.
-if [ "$COMMIT_SOURCE" == "merge" ]; then
-  exit 0
-fi
-
-# 현재 브랜치 이름 가져오기
-BRANCH_NAME=$(git rev-parse --abbrev-ref HEAD)
-
-# 브랜치 이름이 feature/ 또는 hotfix/ 로 시작하는지 확인
-if [[ "$BRANCH_NAME" =~ ^(feature|hotfix)/ ]]; then
-  # 브랜치 번호 추출 (예: feature/123-some-feature)
-  BRANCH_NUMBER=$(echo "$BRANCH_NAME" | grep -o -E '[0-9]+')
-
-  # 브랜치 번호가 있는지 확인하고, 커밋 메시지에 추가
-  if [ -n "$BRANCH_NUMBER" ]; then
-    # 커밋 메시지 파일의 마지막에 브랜치 번호 추가
-    echo "" >> "$COMMIT_MSG_FILE"
-    echo "(#${BRANCH_NUMBER})" >> "$COMMIT_MSG_FILE"
-  fi
-fi
-```
-
-```bash
-# pre-commit
-npm run test
-npm run eslint:fix
-npm run prettier:fix
-git add .
-
-```
-
-```yml
-name: "Unit Test & E2E Test"
-on:
-    pull_request:
-        branches:
-            - develop
-            - main
-jobs:
-    unit-test:
-        runs-on: ubuntu-latest
-        steps:
-            - name: Checkout Repository
-              uses: actions/checkout@v3
-
-            - name: Set up Node.js
-              uses: actions/setup-node@v3
-              with:
-                  node-version: 22.14.0
-
-            - name: Install Dependencies
-              run: npm install
-
-            - name: Run Unit Tests
-              run: npm run test:unit
-
-            - name: Close PR if Tests Fail
-              if: failure()
-              run: |
-                  PR_NUMBER=$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")
-                  echo "❌ Unit 테스트 실패! PR #$PR_NUMBER을 닫습니다."
-                  curl -X PATCH -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-                      -H "Accept: application/vnd.github.v3+json" \
-                      https://api.github.com/repos/${{ github.repository }}/pulls/$PR_NUMBER \
-                      -d '{"state":"closed"}'
-
-    e2e-test:
-        needs: unit-test
-        runs-on: ubuntu-latest
-        steps:
-            - name: Checkout Repository
-              uses: actions/checkout@v3
-
-            - name: Set up Timezone to GMT+9
-              run: sudo timedatectl set-timezone Asia/Seoul
-
-            - name: Set up Node.js
-              uses: actions/setup-node@v3
-              with:
-                  node-version: 22.14.0
-
-            - name: Install Dependencies
-              run: npm install
-
-            - name: Create .test.env
-              run: |
-                  touch .test.env
-                  echo "DB_TYPE=${{ secrets.TEST_DB_TYPE }}" >> .test.env
-                  echo "DB_HOST=${{ secrets.TEST_DB_HOST }}" >> .test.env
-                  echo "DB_PORT=${{ secrets.TEST_DB_PORT }}" >> .test.env
-                  echo "DB_USERNAME=${{ secrets.TEST_DB_USERNAME }}" >> .test.env
-                  echo "DB_PASSWORD=${{ secrets.TEST_DB_PASSWORD }}" >> .test.env
-                  echo "DB_DATABASE=${{ secrets.TEST_DB_DATABASE }}" >> .test.env
-                  echo "DB_SYNCHRONIZE=${{ secrets.TEST_DB_SYNCHRONIZE }}" >> .test.env
-                  echo "SERVER_PORT=${{ secrets.TEST_SERVER_PORT }}" >> .test.env
-
-            - name: Run E2E Tests
-              run: npm run test:db:e2e
-
-            - name: Close PR if Tests Fail
-              if: failure()
-              run: |
-                  PR_NUMBER=$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")
-                  echo "❌ E2E 테스트 실패! PR #$PR_NUMBER을 닫습니다."
-                  curl -X PATCH -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-                      -H "Accept: application/vnd.github.v3+json" \
-                      https://api.github.com/repos/${{ github.repository }}/pulls/$PR_NUMBER \
-                      -d '{"state":"closed"}'
-```
-
-## Code Qality
+## Code Quality
 
 - github actions를 활용한 PR 생성시 code coverage 자동 comment
 - github actions와 SonarCloud를 활용한 코드 정적 분석
+
+### 코드 정적 분석을 통한 코드 퀄리티 개선
+
+초기 프로젝트 정적 분석 결과
+
+<p align="center">
+  <div align="center"><img src="https://i.postimg.cc/gk0FDypp/sonar-cloud01.png" width="80%"/></div>
+</p>
+
+- 관련 PR[github pr 링크]
+
+**Severity(심각도)**
+
+- High : 1
+- Medium : 1
+- Low : 8
+
+**Code Smell**
+
+#### 개선후
+
+- 10
+
+## Layered Architecture
+
+## Response Class
+
+```mermaid
+classDiagram
+    class ErrorResponse {
+        -int statusCode
+        -String error
+        -String message
+        -String path
+        -LocalDateTime timestamp
+        +toJSON(): String
+    }
+
+    class ValidationErrorResponse {
+        -Map<String, String> fieldErrors
+        +toJSON(): String
+    }
+
+    ErrorResponse <|-- ValidationErrorResponse
+```
+
+## Articles
+
+- [AWS SES EventBridge Lambda를 이용한 메일링](https://yokan.netlify.app/aws/ses-eventbridge-lambda%EB%A5%BC%20%EC%9D%B4%EC%9A%A9%ED%95%9C%20%EB%A9%94%EC%9D%BC%EB%A7%81)
+- [AWS CloudFront Geo-location](https://yokan.netlify.app/aws/aws%20cloudfront%20geo-location)
+
+## Git Branch Strategy & Commit Convention
+
+**Git-Flow**
+
+<p align="left">
+  <div align="left"><img src="https://techblog.woowahan.com/wp-content/uploads/img/2017-10-30/git-flow_overall_graph.png" width="80%"/></div>
+</p>
+
+**Commit Convention**
