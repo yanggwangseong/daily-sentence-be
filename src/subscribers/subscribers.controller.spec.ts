@@ -3,17 +3,20 @@ import { Test, TestingModule } from "@nestjs/testing";
 
 import { SubscribersEntity } from "./entities/subscribers.entity";
 import { SubscribersController } from "./subscribers.controller";
-import { SUBSCRIBERS_SERVICE_TOKEN } from "./subscribers.service.interface";
-
-// Service 모킹
-const mockSubscribersService = {
-    create: jest.fn(),
-};
+import {
+    ISubscribersService,
+    SUBSCRIBERS_SERVICE_TOKEN,
+} from "./subscribers.service.interface";
 
 describe("SubscribersController", () => {
     let controller: SubscribersController;
+    let mockSubscribersService: jest.Mocked<ISubscribersService>;
 
     beforeEach(async () => {
+        mockSubscribersService = {
+            create: jest.fn(),
+        };
+
         const module: TestingModule = await Test.createTestingModule({
             controllers: [SubscribersController],
             providers: [
@@ -40,9 +43,7 @@ describe("SubscribersController", () => {
                 updatedAt: new Date(),
             } satisfies SubscribersEntity;
 
-            jest.spyOn(mockSubscribersService, "create").mockResolvedValue(
-                mockSubscriber,
-            );
+            mockSubscribersService.create.mockResolvedValue(mockSubscriber);
 
             const result = await controller.create("test@test.com");
 
@@ -53,7 +54,7 @@ describe("SubscribersController", () => {
         });
 
         it("should return an error if the subscriber already exists", async () => {
-            jest.spyOn(mockSubscribersService, "create").mockResolvedValue({
+            mockSubscribersService.create.mockResolvedValue({
                 message: "이미 구독자입니다.",
                 error: true,
             });

@@ -1,12 +1,15 @@
 import { Test, TestingModule } from "@nestjs/testing";
 
 import { SubscribersEntity } from "../../entities/subscribers.entity";
-import { SUBSCRIBERS_REPOSITORY_TOKEN } from "../../repositories/subscribers.repository.interface";
+import {
+    ISubscribersRepository,
+    SUBSCRIBERS_REPOSITORY_TOKEN,
+} from "../../repositories/subscribers.repository.interface";
 import { CreateSubscriberUseCase } from "./create-subscriber.usecase";
 
 describe("CreateSubscriberUseCase", () => {
     let useCase: CreateSubscriberUseCase;
-    let mockSubscribersRepository: any;
+    let mockSubscribersRepository: jest.Mocked<ISubscribersRepository>;
 
     beforeEach(async () => {
         // Repository 모킹

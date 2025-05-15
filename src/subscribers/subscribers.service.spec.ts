@@ -4,17 +4,20 @@ import { getRepositoryToken } from "@nestjs/typeorm";
 import { SubscribersEntity } from "./entities/subscribers.entity";
 import { SubscribersService } from "./subscribers.service";
 import { SUBSCRIBERS_SERVICE_TOKEN } from "./subscribers.service.interface";
-import { CREATE_SUBSCRIBER_USECASE_TOKEN } from "./use-cases/create-subscriber/create-subscriber.interface";
-
-// createSubscriberUseCase 모킹
-const mockCreateSubscriberUseCase = {
-    execute: jest.fn(),
-};
+import {
+    CREATE_SUBSCRIBER_USECASE_TOKEN,
+    ICreateSubscriberUseCase,
+} from "./use-cases/create-subscriber/create-subscriber.interface";
 
 describe("SubscribersService", () => {
     let subscribersService: SubscribersService;
+    let mockCreateSubscriberUseCase: jest.Mocked<ICreateSubscriberUseCase>;
 
     beforeEach(async () => {
+        mockCreateSubscriberUseCase = {
+            execute: jest.fn(),
+        };
+
         const module: TestingModule = await Test.createTestingModule({
             providers: [
                 {

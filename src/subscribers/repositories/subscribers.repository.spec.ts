@@ -5,16 +5,18 @@ import { Repository } from "typeorm";
 import { SubscribersEntity } from "../entities/subscribers.entity";
 import { SubscribersRepository } from "./subscribers.repository";
 
-const mockRepository = {
-    findOne: jest.fn(),
-    save: jest.fn(),
-};
-
 describe("SubscribersRepository", () => {
     let subscribersRepository: SubscribersRepository;
-    let repository: Repository<SubscribersEntity>;
+    let mockRepository: jest.Mocked<
+        Pick<Repository<SubscribersEntity>, "findOne" | "save">
+    >;
 
     beforeEach(async () => {
+        mockRepository = {
+            findOne: jest.fn(),
+            save: jest.fn(),
+        };
+
         const module: TestingModule = await Test.createTestingModule({
             providers: [
                 SubscribersRepository,
@@ -27,9 +29,6 @@ describe("SubscribersRepository", () => {
 
         subscribersRepository = module.get<SubscribersRepository>(
             SubscribersRepository,
-        );
-        repository = module.get<Repository<SubscribersEntity>>(
-            getRepositoryToken(SubscribersEntity),
         );
     });
 
@@ -52,7 +51,7 @@ describe("SubscribersRepository", () => {
                 await subscribersRepository.findByEmail("test@test.com");
 
             expect(result).toEqual(mockSubscriber);
-            expect(repository.findOne).toHaveBeenCalledWith({
+            expect(mockRepository.findOne).toHaveBeenCalledWith({
                 where: { email: "test@test.com" },
             });
         });
@@ -64,7 +63,7 @@ describe("SubscribersRepository", () => {
                 await subscribersRepository.findByEmail("test@test.com");
 
             expect(result).toBeNull();
-            expect(repository.findOne).toHaveBeenCalledWith({
+            expect(mockRepository.findOne).toHaveBeenCalledWith({
                 where: { email: "test@test.com" },
             });
         });
@@ -85,7 +84,7 @@ describe("SubscribersRepository", () => {
                 await subscribersRepository.createSubscriber("test@test.com");
 
             expect(result).toEqual(mockSubscriber);
-            expect(repository.save).toHaveBeenCalledWith({
+            expect(mockRepository.save).toHaveBeenCalledWith({
                 email: "test@test.com",
             });
         });
