@@ -33,9 +33,9 @@ export const TypeOrmModuleOptions: TypeOrmModuleAsyncOptions = {
             database: configService.get(ENV_DB_DATABASE) || "test",
             password: configService.get(ENV_DB_PASSWORD) || "test",
             entities: [
-                process.env["NODE_ENV"] === "production"
-                    ? path.join(process.cwd(), "dist/**/*.entity.js")
-                    : path.join(process.cwd(), "src/**/*.entity.ts"),
+                process.env["NODE_ENV"] === "test"
+                    ? path.join(process.cwd(), "src/**/*.entity.ts")
+                    : path.join(process.cwd(), "dist/**/*.entity.js"),
             ],
             synchronize: configService.get<boolean>(ENV_DB_SYNCHRONIZE) || true,
             extra: {

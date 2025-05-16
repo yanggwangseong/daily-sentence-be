@@ -1,5 +1,6 @@
 import { INestApplication, NestApplicationOptions } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
+import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import dotenv from "dotenv";
 import path from "path";
 
@@ -22,6 +23,26 @@ export namespace Backend {
     export const start = async (options: NestApplicationOptions = {}) => {
         const app = await NestFactory.create(AppModule, options);
 
+        // swagger
+        const config = new DocumentBuilder()
+            .setTitle("daily-sentence API")
+            .setDescription("daily-sentence API 문서")
+            .setVersion("1.0.0")
+            .addBearerAuth(
+                {
+                    type: "http",
+                    scheme: "bearer",
+                    name: "JWT",
+                    in: "header",
+                },
+                "accessToken",
+            )
+            .build();
+        SwaggerModule.setup(
+            "swagger",
+            app,
+            SwaggerModule.createDocument(app, config),
+        );
         await app.listen(process.env[ENV_SERVER_PORT]!);
 
         process.on("SIGINT", async () => {

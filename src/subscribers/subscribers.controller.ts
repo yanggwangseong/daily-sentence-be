@@ -12,6 +12,14 @@ import {
     SUBSCRIBERS_SERVICE_TOKEN,
 } from "./subscribers.service.interface";
 
+/**
+ * subscribers 컨트롤러
+ * @summary 구독자 컨트롤러
+ * @description 구독자 컨트롤러
+ * @version 1.0.0
+ * @author 양광성
+ * @since 2025-05-16
+ */
 @Controller("subscribers")
 export class SubscribersController {
     constructor(
