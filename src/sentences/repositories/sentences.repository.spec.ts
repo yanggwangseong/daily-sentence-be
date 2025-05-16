@@ -39,23 +39,35 @@ describe("SentencesRepository", () => {
                 id: 1,
                 sentence: "Hello, world!",
                 meaning: "헬로 월드!",
-                createdAt: new Date("2021-01-01"),
-                updatedAt: new Date("2021-01-01"),
+                createdAt: new Date("2025-01-01"),
+                updatedAt: new Date("2025-01-01"),
+                vocabs: [
+                    {
+                        id: 1,
+                        word: "Hello",
+                        definition: "헬로",
+                    },
+                ],
+                video: {
+                    id: 1,
+                    videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+                },
             };
 
             const queryBuilderMock = {
                 leftJoinAndSelect: jest.fn().mockReturnThis(),
                 where: jest.fn().mockReturnThis(),
+                select: jest.fn().mockReturnThis(),
+                addSelect: jest.fn().mockReturnThis(),
                 getOne: jest.fn().mockResolvedValue(mockSentence),
             };
 
-            jest.spyOn(
-                mockSentencesRepository,
-                "createQueryBuilder",
-            ).mockReturnValue(queryBuilderMock as any);
+            mockSentencesRepository.createQueryBuilder.mockReturnValue(
+                queryBuilderMock,
+            );
 
             const sentence =
-                await sentencesRepository.findOneByDate("2021-01-01");
+                await sentencesRepository.findOneByDate("2025-01-01");
 
             expect(sentence).toEqual(mockSentence);
             expect(
@@ -73,7 +85,7 @@ describe("SentencesRepository", () => {
             );
             expect(queryBuilderMock.where).toHaveBeenCalledWith(
                 "DATE(sentence.createdAt) = :date",
-                { date: "2021-01-01" },
+                { date: "2025-01-01" },
             );
             expect(queryBuilderMock.getOne).toHaveBeenCalled();
         });
@@ -89,32 +101,33 @@ describe("SentencesRepository", () => {
                     id: 1,
                     sentence: "Hello, world!",
                     meaning: "헬로 월드!",
-                    createdAt: new Date("2021-01-01"),
-                    updatedAt: new Date("2021-01-01"),
+                    createdAt: new Date("2025-01-01"),
+                    updatedAt: new Date("2025-01-01"),
                 },
                 {
                     id: 2,
                     sentence: "Hello, world!",
                     meaning: "헬로 월드!",
-                    createdAt: new Date("2021-01-02"),
-                    updatedAt: new Date("2021-01-02"),
+                    createdAt: new Date("2025-01-02"),
+                    updatedAt: new Date("2025-01-02"),
                 },
             ];
 
             const queryBuilderMock = {
                 leftJoinAndSelect: jest.fn().mockReturnThis(),
                 where: jest.fn().mockReturnThis(),
+                select: jest.fn().mockReturnThis(),
+                addSelect: jest.fn().mockReturnThis(),
                 getMany: jest.fn().mockResolvedValue(mockSentences),
             };
 
-            jest.spyOn(
-                mockSentencesRepository,
-                "createQueryBuilder",
-            ).mockReturnValue(queryBuilderMock as any);
+            mockSentencesRepository.createQueryBuilder.mockReturnValue(
+                queryBuilderMock,
+            );
 
             const sentences = await sentencesRepository.findByDateRange(
-                "2021-01-01",
-                "2021-01-02",
+                "2025-01-01",
+                "2025-01-02",
             );
 
             expect(sentences).toEqual(mockSentences);
@@ -134,8 +147,8 @@ describe("SentencesRepository", () => {
             expect(queryBuilderMock.where).toHaveBeenCalledWith(
                 "DATE(sentence.createdAt) BETWEEN :startDate AND :endDate",
                 {
-                    startDate: "2021-01-01",
-                    endDate: "2021-01-02",
+                    startDate: "2025-01-01",
+                    endDate: "2025-01-02",
                 },
             );
             expect(queryBuilderMock.getMany).toHaveBeenCalled();

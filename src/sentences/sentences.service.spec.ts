@@ -4,25 +4,42 @@ import { getRepositoryToken } from "@nestjs/typeorm";
 import { SentencesEntity } from "./entities/sentences.entity";
 import { VideosEntity } from "./entities/videos.entity";
 import { VocabsEntity } from "./entities/vocabs.entity";
-import { SentencesRepository } from "./repositories/sentences.repository";
 import { SentencesService } from "./sentences.service";
-
-// Repository 모킹
-const mockSentencesRepository = {
-    findOneByDate: jest.fn(),
-    findByDateRange: jest.fn(),
-};
+import {
+    GET_SENTENCE_USECASE_TOKEN,
+    GET_WEEKLY_SENTENCES_USECASE_TOKEN,
+    GetSentenceError,
+    GetSentenceResponse,
+    GetWeeklySentencesResponse,
+    IGetSentenceUseCase,
+    IGetWeeklySentencesUseCase,
+} from "./use-cases";
 
 describe("sentencesService", () => {
     let sentencesService: SentencesService;
 
+    let mockGetSentenceUseCase: jest.Mocked<IGetSentenceUseCase>;
+    let mockGetWeeklySentencesUseCase: jest.Mocked<IGetWeeklySentencesUseCase>;
+
     beforeEach(async () => {
+        mockGetSentenceUseCase = {
+            execute: jest.fn(),
+        };
+
+        mockGetWeeklySentencesUseCase = {
+            execute: jest.fn(),
+        };
+
         const module: TestingModule = await Test.createTestingModule({
             providers: [
                 SentencesService,
                 {
-                    provide: SentencesRepository,
-                    useValue: mockSentencesRepository,
+                    provide: GET_SENTENCE_USECASE_TOKEN,
+                    useValue: mockGetSentenceUseCase,
+                },
+                {
+                    provide: GET_WEEKLY_SENTENCES_USECASE_TOKEN,
+                    useValue: mockGetWeeklySentencesUseCase,
                 },
                 {
                     provide: getRepositoryToken(SentencesEntity),
@@ -52,44 +69,41 @@ describe("sentencesService", () => {
     describe("getSentences", () => {
         it("should return a sentence by date", async () => {
             const mockSentence = {
+                date: "2025-01-01",
                 id: 1,
                 sentence: "Hello, world!",
                 meaning: "헬로 월드!",
-                createdAt: new Date("2021-01-01"),
-                updatedAt: new Date("2021-01-01"),
-                vocabs: [{ word: "Hello", definition: "헬로" }],
-                video: {
-                    videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-                },
-            };
-
-            jest.spyOn(
-                mockSentencesRepository,
-                "findOneByDate",
-            ).mockResolvedValue(mockSentence);
-
-            const result = await sentencesService.getSentences("2021-01-01");
-
-            expect(result).toEqual({
-                date: "2021-01-01",
-                sentence: "Hello, world!",
-                meaning: "헬로 월드!",
+                createdAt: new Date("2025-01-01"),
+                updatedAt: new Date("2025-01-01"),
                 vocab: [{ word: "Hello", definition: "헬로" }],
                 videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-            });
+            } as unknown as GetSentenceResponse | GetSentenceError;
+
+            mockGetSentenceUseCase.execute.mockReturnValue(
+                Promise.resolve(mockSentence),
+            );
+
+            const result = await sentencesService.getSentences("2025-01-01");
+
+            expect(result).toEqual(mockSentence);
         });
 
         it("should return null when no sentence is found for the given date", async () => {
-            jest.spyOn(
-                mockSentencesRepository,
-                "findOneByDate",
-            ).mockResolvedValue(null);
+            mockGetSentenceUseCase.execute.mockReturnValue(
+                Promise.resolve({
+                    error: true,
+                    message: "해당 날짜에 문장이 없습니다.",
+                }),
+            );
 
-            const result = await sentencesService.getSentences("2021-01-01");
+            const result = await sentencesService.getSentences("2025-01-01");
 
-            expect(result).toBeNull();
-            expect(mockSentencesRepository.findOneByDate).toHaveBeenCalledWith(
-                "2021-01-01",
+            expect(result).toEqual({
+                error: true,
+                message: "해당 날짜에 문장이 없습니다.",
+            });
+            expect(mockGetSentenceUseCase.execute).toHaveBeenCalledWith(
+                "2025-01-01",
             );
         });
     });
@@ -104,8 +118,8 @@ describe("sentencesService", () => {
                     id: 1,
                     sentence: "Hello, world!",
                     meaning: "헬로 월드!",
-                    createdAt: new Date("2021-01-01"),
-                    updatedAt: new Date("2021-01-01"),
+                    createdAt: new Date("2025-01-01"),
+                    updatedAt: new Date("2025-01-01"),
                     vocabs: [{ word: "Hello", definition: "헬로" }],
                     video: {
                         videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
@@ -115,42 +129,26 @@ describe("sentencesService", () => {
                     id: 2,
                     sentence: "Hello, world!",
                     meaning: "헬로 월드!",
-                    createdAt: new Date("2021-01-02"),
-                    updatedAt: new Date("2021-01-02"),
+                    createdAt: new Date("2025-01-02"),
+                    updatedAt: new Date("2025-01-02"),
                     vocabs: [{ word: "Hello", definition: "헬로" }],
                     video: {
                         videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
                     },
                 },
-            ];
+            ] as unknown as GetWeeklySentencesResponse;
 
-            jest.spyOn(
-                mockSentencesRepository,
-                "findByDateRange",
-            ).mockResolvedValue(mockSentences);
+            mockGetWeeklySentencesUseCase.execute.mockReturnValue(
+                Promise.resolve(mockSentences),
+            );
 
             const result =
-                await sentencesService.getWeeklySentences("2021-01-01");
+                await sentencesService.getWeeklySentences("2025-01-01");
 
-            expect(result).toEqual([
-                {
-                    date: "2021-01-01",
-                    sentence: "Hello, world!",
-                    meaning: "헬로 월드!",
-                    vocab: [{ word: "Hello", definition: "헬로" }],
-                    videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-                },
-                {
-                    date: "2021-01-02",
-                    sentence: "Hello, world!",
-                    meaning: "헬로 월드!",
-                    vocab: [{ word: "Hello", definition: "헬로" }],
-                    videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-                },
-            ]);
-            expect(
-                mockSentencesRepository.findByDateRange,
-            ).toHaveBeenCalledWith("2020-12-28", "2021-01-03");
+            expect(result).toEqual(mockSentences);
+            expect(mockGetWeeklySentencesUseCase.execute).toHaveBeenCalledWith(
+                "2025-01-01",
+            );
         });
     });
 });

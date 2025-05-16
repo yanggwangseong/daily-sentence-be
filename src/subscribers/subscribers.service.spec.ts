@@ -2,25 +2,31 @@ import { Test, TestingModule } from "@nestjs/testing";
 import { getRepositoryToken } from "@nestjs/typeorm";
 
 import { SubscribersEntity } from "./entities/subscribers.entity";
-import { SubscribersRepository } from "./repositories/subscribers.repository";
 import { SubscribersService } from "./subscribers.service";
+import { SUBSCRIBERS_SERVICE_TOKEN } from "./subscribers.service.interface";
+import {
+    CREATE_SUBSCRIBER_USECASE_TOKEN,
+    ICreateSubscriberUseCase,
+} from "./use-cases/create-subscriber/create-subscriber.interface";
 
-// Repository 모킹
-const mockSubscribersRepository = {
-    findByEmail: jest.fn(),
-    createSubscriber: jest.fn(),
-};
-
-describe("subscribersService", () => {
+describe("SubscribersService", () => {
     let subscribersService: SubscribersService;
+    let mockCreateSubscriberUseCase: jest.Mocked<ICreateSubscriberUseCase>;
 
     beforeEach(async () => {
+        mockCreateSubscriberUseCase = {
+            execute: jest.fn(),
+        };
+
         const module: TestingModule = await Test.createTestingModule({
             providers: [
-                SubscribersService,
                 {
-                    provide: SubscribersRepository,
-                    useValue: mockSubscribersRepository,
+                    provide: SUBSCRIBERS_SERVICE_TOKEN,
+                    useClass: SubscribersService,
+                },
+                {
+                    provide: CREATE_SUBSCRIBER_USECASE_TOKEN,
+                    useValue: mockCreateSubscriberUseCase,
                 },
                 {
                     provide: getRepositoryToken(SubscribersEntity),
@@ -29,7 +35,9 @@ describe("subscribersService", () => {
             ],
         }).compile();
 
-        subscribersService = module.get<SubscribersService>(SubscribersService);
+        subscribersService = module.get<SubscribersService>(
+            SUBSCRIBERS_SERVICE_TOKEN,
+        );
     });
 
     it("should be defined", () => {
@@ -45,24 +53,25 @@ describe("subscribersService", () => {
         } satisfies SubscribersEntity;
 
         it("should create a subscriber", async () => {
-            jest.spyOn(
-                mockSubscribersRepository,
-                "createSubscriber",
-            ).mockResolvedValue(mockSubscriber);
+            // 유스케이스가 새 구독자를 반환하도록 모킹
+            mockCreateSubscriberUseCase.execute.mockResolvedValue({
+                subscriber: mockSubscriber,
+            });
 
             const result = await subscribersService.create("test@test.com");
 
             expect(result).toEqual(mockSubscriber);
-            expect(
-                mockSubscribersRepository.createSubscriber,
-            ).toHaveBeenCalledWith("test@test.com");
+            expect(mockCreateSubscriberUseCase.execute).toHaveBeenCalledWith(
+                "test@test.com",
+            );
         });
 
         it("should return an error if the subscriber already exists", async () => {
-            jest.spyOn(
-                mockSubscribersRepository,
-                "findByEmail",
-            ).mockResolvedValue(mockSubscriber);
+            // 유스케이스가 에러를 반환하도록 모킹
+            mockCreateSubscriberUseCase.execute.mockResolvedValue({
+                message: "이미 구독자입니다.",
+                error: true,
+            });
 
             const result = await subscribersService.create("test@test.com");
 
@@ -70,6 +79,9 @@ describe("subscribersService", () => {
                 message: "이미 구독자입니다.",
                 error: true,
             });
+            expect(mockCreateSubscriberUseCase.execute).toHaveBeenCalledWith(
+                "test@test.com",
+            );
         });
     });
 });

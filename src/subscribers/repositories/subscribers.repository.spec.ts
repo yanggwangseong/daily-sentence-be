@@ -5,16 +5,18 @@ import { Repository } from "typeorm";
 import { SubscribersEntity } from "../entities/subscribers.entity";
 import { SubscribersRepository } from "./subscribers.repository";
 
-const mockRepository = {
-    findOne: jest.fn(),
-    save: jest.fn(),
-};
-
 describe("SubscribersRepository", () => {
     let subscribersRepository: SubscribersRepository;
-    let repository: Repository<SubscribersEntity>;
+    let mockRepository: jest.Mocked<
+        Pick<Repository<SubscribersEntity>, "findOne" | "save">
+    >;
 
     beforeEach(async () => {
+        mockRepository = {
+            findOne: jest.fn(),
+            save: jest.fn(),
+        };
+
         const module: TestingModule = await Test.createTestingModule({
             providers: [
                 SubscribersRepository,
@@ -27,9 +29,6 @@ describe("SubscribersRepository", () => {
 
         subscribersRepository = module.get<SubscribersRepository>(
             SubscribersRepository,
-        );
-        repository = module.get<Repository<SubscribersEntity>>(
-            getRepositoryToken(SubscribersEntity),
         );
     });
 
@@ -46,25 +45,25 @@ describe("SubscribersRepository", () => {
                 updatedAt: new Date(),
             } as SubscribersEntity;
 
-            jest.spyOn(repository, "findOne").mockResolvedValue(mockSubscriber);
+            mockRepository.findOne.mockResolvedValue(mockSubscriber);
 
             const result =
                 await subscribersRepository.findByEmail("test@test.com");
 
             expect(result).toEqual(mockSubscriber);
-            expect(repository.findOne).toHaveBeenCalledWith({
+            expect(mockRepository.findOne).toHaveBeenCalledWith({
                 where: { email: "test@test.com" },
             });
         });
 
         it("should return null if no subscriber is found", async () => {
-            jest.spyOn(repository, "findOne").mockResolvedValue(null);
+            mockRepository.findOne.mockResolvedValue(null);
 
             const result =
                 await subscribersRepository.findByEmail("test@test.com");
 
             expect(result).toBeNull();
-            expect(repository.findOne).toHaveBeenCalledWith({
+            expect(mockRepository.findOne).toHaveBeenCalledWith({
                 where: { email: "test@test.com" },
             });
         });
@@ -79,13 +78,13 @@ describe("SubscribersRepository", () => {
                 updatedAt: new Date(),
             } satisfies SubscribersEntity;
 
-            jest.spyOn(repository, "save").mockResolvedValue(mockSubscriber);
+            mockRepository.save.mockResolvedValue(mockSubscriber);
 
             const result =
                 await subscribersRepository.createSubscriber("test@test.com");
 
             expect(result).toEqual(mockSubscriber);
-            expect(repository.save).toHaveBeenCalledWith({
+            expect(mockRepository.save).toHaveBeenCalledWith({
                 email: "test@test.com",
             });
         });
