@@ -24,6 +24,7 @@ export const TypeOrmModuleOptions: TypeOrmModuleAsyncOptions = {
     useFactory: async (
         configService: ConfigService,
     ): Promise<TypeOrmModuleOptionsType> => {
+        const NODE_ENV = configService.get("NODE_ENV");
         const option = {
             type: configService.get(ENV_DB_TYPE) || "mysql",
             host: configService.get(ENV_DB_HOST) || "localhost",
@@ -31,7 +32,11 @@ export const TypeOrmModuleOptions: TypeOrmModuleAsyncOptions = {
             username: configService.get(ENV_DB_USERNAME) || "root",
             database: configService.get(ENV_DB_DATABASE) || "test",
             password: configService.get(ENV_DB_PASSWORD) || "test",
-            entities: [path.join(process.cwd(), "dist/**/*.entity.js")],
+            entities: [
+                process.env["NODE_ENV"] === "production"
+                    ? path.join(process.cwd(), "dist/**/*.entity.js")
+                    : path.join(process.cwd(), "src/**/*.entity.ts"),
+            ],
             synchronize: configService.get<boolean>(ENV_DB_SYNCHRONIZE) || true,
             extra: {
                 connectionLimit: 50,
@@ -44,7 +49,7 @@ export const TypeOrmModuleOptions: TypeOrmModuleAsyncOptions = {
 
             maxQueryExecutionTime: 1000,
 
-            ...(configService.get("NODE_ENV") === "development"
+            ...(NODE_ENV === "development"
                 ? {
                       retryAttempts: 10,
                       logging: ["query", "error", "warn"] satisfies LogLevel[],
