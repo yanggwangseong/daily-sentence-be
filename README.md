@@ -57,13 +57,13 @@
 ## Code Quality
 
 - github actions를 활용한 PR 생성시 code coverage 자동 comment
-    <p align="left">
-    <div align="left"><img src="https://i.postimg.cc/15vGpnhn/githubactions01-coverage.png" width="80%"/></div>
-    </p>
+      <p align="left">
+      <div align="left"><img src="https://i.postimg.cc/15vGpnhn/githubactions01-coverage.png" width="80%"/></div>
+      </p>
 - github actions와 SonarCloud를 활용한 코드 정적 분석
-  <p align="left">
-  <div align="left"><img src="https://i.postimg.cc/CKSwS157/sonar-cloud-corverage01.png" width="80%"/></div>
-  </p>
+    <p align="left">
+    <div align="left"><img src="https://i.postimg.cc/CKSwS157/sonar-cloud-corverage01.png" width="80%"/></div>
+    </p>
 
 ### 코드 정적 분석을 통한 코드 퀄리티 개선
 
