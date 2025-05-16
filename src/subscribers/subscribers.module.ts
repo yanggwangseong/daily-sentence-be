@@ -10,6 +10,12 @@ import { SUBSCRIBERS_SERVICE_TOKEN } from "./subscribers.service.interface";
 import { CREATE_SUBSCRIBER_USECASE_TOKEN } from "./use-cases/create-subscriber/create-subscriber.interface";
 import { CreateSubscriberUseCase } from "./use-cases/create-subscriber/create-subscriber.usecase";
 
+/**
+ * subscribers 모듈
+ * @description 구독자 관리 모듈
+ * @author 양광성
+ * @todo Dynamic Provider 설계가 필요함
+ */
 @Module({
     imports: [TypeOrmModule.forFeature([SubscribersEntity])],
     controllers: [SubscribersController],

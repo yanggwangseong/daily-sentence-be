@@ -10,6 +10,13 @@
 
 - [📂 Front Repository](https://github.com/yanggwangseong/daily-sentence-fe)
 
+## 해당 기술이 왜 필요한지 어떤 문제를 해결하기 위해서 사용 했는지에 대해서 고민 하였습니다.
+
+- [Layered Architecture가 왜 중요할까?](https://github.com/yanggwangseong/daily-sentence-be)
+- [Date 타입은 왜 불변성을 보장 해야 할까?](https://github.com/yanggwangseong/daily-sentence-be)
+- [Try Catch와 Response Type](https://github.com/yanggwangseong/daily-sentence-be)
+- [왜 Memcached를 선택 했을까?](https://github.com/yanggwangseong/daily-sentence-be)
+
 ## SES를 통한 이메일 전송 Lambda 함수
 
 - [📝 AWS SES EventBridge Lambda를 이용한 이메일 전송](https://yokan.netlify.app/aws/ses-eventbridge-lambda%EB%A5%BC%20%EC%9D%B4%EC%9A%A9%ED%95%9C%20%EB%A9%94%EC%9D%BC%EB%A7%81)
@@ -50,13 +57,13 @@
 ## Code Quality
 
 - github actions를 활용한 PR 생성시 code coverage 자동 comment
-      <p align="left">
-      <div align="left"><img src="https://i.postimg.cc/15vGpnhn/githubactions01-coverage.png" width="80%"/></div>
-      </p>
+  <p align="left">
+  <div align="left"><img src="https://i.postimg.cc/15vGpnhn/githubactions01-coverage.png" width="80%"/></div>
+  </p>
 - github actions와 SonarCloud를 활용한 코드 정적 분석
-    <p align="left">
-    <div align="left"><img src="https://i.postimg.cc/CKSwS157/sonar-cloud-corverage01.png" width="80%"/></div>
-    </p>
+      <p align="left">
+      <div align="left"><img src="https://i.postimg.cc/CKSwS157/sonar-cloud-corverage01.png" width="80%"/></div>
+      </p>
 
 ### 코드 정적 분석을 통한 코드 퀄리티 개선
 

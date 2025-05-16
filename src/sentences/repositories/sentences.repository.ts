@@ -15,6 +15,15 @@ export class SentencesRepository implements ISentencesRepository {
     findOneByDate(datetime: string): Promise<SentencesEntity | null> {
         return this.repository
             .createQueryBuilder("sentence")
+            .select([
+                "sentence.id",
+                "sentence.sentence",
+                "sentence.meaning",
+                "sentence.createdAt",
+                "sentence.updatedAt",
+            ])
+            .addSelect(["vocab.id", "vocab.word", "vocab.definition"])
+            .addSelect(["video.id", "video.videoUrl"])
             .leftJoinAndSelect("sentence.vocabs", "vocab")
             .leftJoinAndSelect("sentence.video", "video")
             .where("DATE(sentence.createdAt) = :date", { date: datetime })
@@ -27,6 +36,15 @@ export class SentencesRepository implements ISentencesRepository {
     ): Promise<SentencesEntity[]> {
         return this.repository
             .createQueryBuilder("sentence")
+            .select([
+                "sentence.id",
+                "sentence.sentence",
+                "sentence.meaning",
+                "sentence.createdAt",
+                "sentence.updatedAt",
+            ])
+            .addSelect(["vocab.word", "vocab.definition"])
+            .addSelect(["video.videoUrl"])
             .leftJoinAndSelect("sentence.vocabs", "vocab")
             .leftJoinAndSelect("sentence.video", "video")
             .where("DATE(sentence.createdAt) BETWEEN :startDate AND :endDate", {

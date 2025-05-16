@@ -2,24 +2,27 @@ import { NotFoundException } from "@nestjs/common";
 import { Test, TestingModule } from "@nestjs/testing";
 
 import { SentencesController } from "./sentences.controller";
-import { SentencesService } from "./sentences.service";
-
-// Service 모킹
-const mockSentencesService = {
-    getSentences: jest.fn(),
-    getWeeklySentences: jest.fn(),
-};
+import {
+    ISentencesService,
+    SENTENCES_SERVICE_TOKEN,
+} from "./sentences.service.interface";
 
 describe("sentencesController", () => {
     let controller: SentencesController;
 
+    let mockSentencesService: jest.Mocked<ISentencesService>;
+
     beforeEach(async () => {
+        mockSentencesService = {
+            getSentences: jest.fn(),
+            getWeeklySentences: jest.fn(),
+        };
+
         const module: TestingModule = await Test.createTestingModule({
             controllers: [SentencesController],
             providers: [
-                SentencesService,
                 {
-                    provide: SentencesService,
+                    provide: SENTENCES_SERVICE_TOKEN,
                     useValue: mockSentencesService,
                 },
             ],
@@ -53,10 +56,13 @@ describe("sentencesController", () => {
         });
 
         it("should throw NotFoundException when no sentence is found for the given date", async () => {
-            mockSentencesService.getSentences.mockResolvedValue(null);
+            mockSentencesService.getSentences.mockResolvedValue({
+                error: true,
+                message: "해당 날짜에 문장이 없습니다.",
+            });
 
             await expect(controller.getSentences("2021-01-01")).rejects.toThrow(
-                NotFoundException,
+                new NotFoundException("해당 날짜에 문장이 없습니다."),
             );
         });
     });
