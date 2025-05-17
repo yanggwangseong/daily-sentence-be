@@ -12,3 +12,6 @@ export const ENV_SERVER_PORT = "SERVER_PORT" as const;
 
 // sentry
 export const ENV_SENTRY_DNS_KEY = "SENTRY_DNS" as const;
+
+// slack
+export const ENV_SLACK_URL = "SLACK_URL" as const;

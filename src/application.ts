@@ -1,12 +1,16 @@
 import { INestApplication, NestApplicationOptions } from "@nestjs/common";
 import { HttpAdapterHost, NestFactory } from "@nestjs/core";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
+import { IncomingWebhook } from "@slack/webhook";
 import dotenv from "dotenv";
 import path from "path";
 
 import { AppModule } from "@APP/app.module";
 
-import { ENV_SERVER_PORT } from "./common/constants/env-keys.const";
+import {
+    ENV_SERVER_PORT,
+    ENV_SLACK_URL,
+} from "./common/constants/env-keys.const";
 import { AllExceptionFilter } from "./common/filters/all-exception.filter";
 import { SuccessResponseInterceptor } from "./common/interceptors/success-response.interceptor";
 
@@ -46,7 +50,12 @@ export namespace Backend {
             SwaggerModule.createDocument(app, config),
         );
         await app
-            .useGlobalFilters(new AllExceptionFilter(app.get(HttpAdapterHost))) // Global Filter 설정
+            .useGlobalFilters(
+                new AllExceptionFilter(
+                    app.get(HttpAdapterHost),
+                    new IncomingWebhook(process.env[ENV_SLACK_URL]!),
+                ),
+            ) // Global Filter 설정
             .useGlobalInterceptors(new SuccessResponseInterceptor()) // Global Interceptor 설정
             .listen(process.env[ENV_SERVER_PORT]!);
 

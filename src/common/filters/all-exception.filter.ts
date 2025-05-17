@@ -7,6 +7,7 @@ import {
 } from "@nestjs/common";
 import { HttpAdapterHost } from "@nestjs/core";
 import { SentryExceptionCaptured } from "@sentry/nestjs";
+import { IncomingWebhook } from "@slack/webhook";
 
 /**
  * 모든 예외 필터
@@ -19,7 +20,10 @@ import { SentryExceptionCaptured } from "@sentry/nestjs";
  */
 @Catch()
 export class AllExceptionFilter implements ExceptionFilter {
-    constructor(private readonly httpAdapterHost: HttpAdapterHost) {}
+    constructor(
+        private readonly httpAdapterHost: HttpAdapterHost,
+        private readonly incomingWebhook: IncomingWebhook,
+    ) {}
     @SentryExceptionCaptured()
     catch(exception: unknown, host: ArgumentsHost): void {
         const { httpAdapter } = this.httpAdapterHost;
@@ -36,6 +40,10 @@ export class AllExceptionFilter implements ExceptionFilter {
             timestamp: new Date().toISOString(),
             path: httpAdapter.getRequestUrl(ctx.getRequest()),
         };
+
+        void this.incomingWebhook.send({
+            text: `[${process.env["NODE_ENV"]}] ${exception}`,
+        });
 
         httpAdapter.reply(ctx.getResponse(), responseBody, httpStatus);
     }
