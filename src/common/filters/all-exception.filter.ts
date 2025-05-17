@@ -6,6 +6,7 @@ import {
     HttpStatus,
 } from "@nestjs/common";
 import { HttpAdapterHost } from "@nestjs/core";
+import { SentryExceptionCaptured } from "@sentry/nestjs";
 
 /**
  * 모든 예외 필터
@@ -19,7 +20,7 @@ import { HttpAdapterHost } from "@nestjs/core";
 @Catch()
 export class AllExceptionFilter implements ExceptionFilter {
     constructor(private readonly httpAdapterHost: HttpAdapterHost) {}
-
+    @SentryExceptionCaptured()
     catch(exception: unknown, host: ArgumentsHost): void {
         const { httpAdapter } = this.httpAdapterHost;
 
