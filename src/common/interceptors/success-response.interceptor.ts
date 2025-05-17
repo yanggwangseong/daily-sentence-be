@@ -15,6 +15,7 @@ import { SuccessResponseDto } from "../response/success-response.dto";
  * @version 1.0.0
  * @author 양광성
  * @since 2025-05-17
+ * @reference https://docs.nestjs.com/interceptors#interceptors
  */
 @Injectable()
 export class SuccessResponseInterceptor<T>
