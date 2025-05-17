@@ -7,6 +7,7 @@ import path from "path";
 import { AppModule } from "@APP/app.module";
 
 import { ENV_SERVER_PORT } from "./common/constants/env-keys.const";
+import { SuccessResponseInterceptor } from "./common/interceptors/success-response.interceptor";
 
 dotenv.config({
     path: path.resolve(
@@ -43,7 +44,9 @@ export namespace Backend {
             app,
             SwaggerModule.createDocument(app, config),
         );
-        await app.listen(process.env[ENV_SERVER_PORT]!);
+        await app
+            .useGlobalInterceptors(new SuccessResponseInterceptor()) // Global Interceptor 설정
+            .listen(process.env[ENV_SERVER_PORT]!);
 
         process.on("SIGINT", async () => {
             await end(app);
