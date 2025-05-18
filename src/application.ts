@@ -13,6 +13,7 @@ import {
 } from "./common/constants/env-keys.const";
 import { AllExceptionFilter } from "./common/filters/all-exception.filter";
 import { SuccessResponseInterceptor } from "./common/interceptors/success-response.interceptor";
+import { winstonLogger } from "./common/logger/winston";
 
 dotenv.config({
     path: path.resolve(
@@ -49,6 +50,9 @@ export namespace Backend {
             app,
             SwaggerModule.createDocument(app, config),
         );
+        // use winston logger
+        app.useLogger(winstonLogger);
+
         await app
             .useGlobalFilters(
                 new AllExceptionFilter(
