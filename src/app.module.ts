@@ -1,6 +1,7 @@
 import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import { TypeOrmModule } from "@nestjs/typeorm";
+import { SentryModule } from "@sentry/nestjs/setup";
 import path from "path";
 
 import { TypeOrmModuleOptions } from "@APP/common/typeorm";
@@ -12,6 +13,7 @@ import { VisitsModule } from "./visits/visits.module";
 
 @Module({
     imports: [
+        SentryModule.forRoot(),
         ConfigModule.forRoot({
             envFilePath: [
                 path.resolve(process.cwd(), `.${process.env["NODE_ENV"]}.env`),
