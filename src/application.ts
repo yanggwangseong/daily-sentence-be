@@ -34,9 +34,8 @@ export namespace Backend {
         app.enableCors({
             origin:
                 process.env["NODE_ENV"] === "production"
-                    ? process.env["FRONT_URL"]
+                    ? "https://www.daily-sentence.co.kr"
                     : true,
-            methods: "GET,POST",
             credentials: true,
         });
 
