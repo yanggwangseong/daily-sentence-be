@@ -30,6 +30,16 @@ export namespace Backend {
     export const start = async (options: NestApplicationOptions = {}) => {
         const app = await NestFactory.create(AppModule, options);
 
+        // Enable CORS
+        app.enableCors({
+            origin:
+                process.env["NODE_ENV"] === "production"
+                    ? process.env["FRONT_URL"]
+                    : true,
+            methods: "GET,POST",
+            credentials: true,
+        });
+
         // swagger
         const config = new DocumentBuilder()
             .setTitle("daily-sentence API")
