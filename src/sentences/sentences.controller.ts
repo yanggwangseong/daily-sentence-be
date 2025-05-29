@@ -1,17 +1,27 @@
-import { Controller, Get, NotFoundException, Param } from "@nestjs/common";
+import {
+    Controller,
+    Get,
+    Inject,
+    NotFoundException,
+    Param,
+} from "@nestjs/common";
 
 import { SentencesService } from "./sentences.service";
+import { SENTENCES_SERVICE_TOKEN } from "./sentences.service.interface";
 
 @Controller("sentences")
 export class SentencesController {
-    constructor(private readonly sentencesService: SentencesService) {}
+    constructor(
+        @Inject(SENTENCES_SERVICE_TOKEN)
+        private readonly sentencesService: SentencesService,
+    ) {}
 
     @Get("/days/:date")
     async getSentences(@Param("date") date: string) {
         const sentences = await this.sentencesService.getSentences(date);
 
-        if (!sentences) {
-            throw new NotFoundException("Sentences not found");
+        if (typeof sentences === "object" && "error" in sentences) {
+            throw new NotFoundException(sentences.message);
         }
 
         return sentences;

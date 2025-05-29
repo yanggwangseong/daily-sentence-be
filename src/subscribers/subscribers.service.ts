@@ -1,22 +1,38 @@
-import { Injectable } from "@nestjs/common";
+import { Inject, Injectable } from "@nestjs/common";
 
-import { SubscribersRepository } from "./repositories/subscribers.repository";
+import { SubscribersEntity } from "./entities/subscribers.entity";
+import { ISubscribersService } from "./subscribers.service.interface";
+import {
+    CREATE_SUBSCRIBER_USECASE_TOKEN,
+    ICreateSubscriberUseCase,
+} from "./use-cases/create-subscriber/create-subscriber.interface";
 
 @Injectable()
-export class SubscribersService {
+export class SubscribersService implements ISubscribersService {
     constructor(
-        private readonly subscribersRepository: SubscribersRepository,
+        @Inject(CREATE_SUBSCRIBER_USECASE_TOKEN)
+        private readonly createSubscriberUseCase: ICreateSubscriberUseCase,
     ) {}
 
-    async create(email: string) {
-        const subscriber = await this.subscribersRepository.findByEmail(email);
-        if (subscriber) {
+    async create(
+        email: string,
+    ): Promise<SubscribersEntity | { message: string; error: boolean }> {
+        const result = await this.createSubscriberUseCase.execute(email);
+
+        if (result.error) {
             return {
-                message: "이미 구독자입니다.",
+                message: result.message || "오류가 발생했습니다.",
                 error: true,
             };
         }
 
-        return this.subscribersRepository.createSubscriber(email);
+        if (!result.subscriber) {
+            return {
+                message: "구독자 생성에 실패했습니다.",
+                error: true,
+            };
+        }
+
+        return result.subscriber;
     }
 }
