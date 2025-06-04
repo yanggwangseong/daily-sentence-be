@@ -1,4 +1,3 @@
-import { NotFoundException } from "@nestjs/common";
 import { Test, TestingModule } from "@nestjs/testing";
 
 import { SentencesController } from "./sentences.controller";
@@ -53,17 +52,6 @@ describe("sentencesController", () => {
             const result = await controller.getSentences("2021-01-01");
 
             expect(result).toEqual(mockSentence);
-        });
-
-        it("should throw NotFoundException when no sentence is found for the given date", async () => {
-            mockSentencesService.getSentences.mockResolvedValue({
-                error: true,
-                message: "해당 날짜에 문장이 없습니다.",
-            });
-
-            await expect(controller.getSentences("2021-01-01")).rejects.toThrow(
-                new NotFoundException("해당 날짜에 문장이 없습니다."),
-            );
         });
     });
 

@@ -1,5 +1,6 @@
 import { Inject, Injectable } from "@nestjs/common";
 
+import { toKoreanLocalDateString } from "../../../common/utils/date.util";
 import {
     ISentencesRepository,
     SENTENCES_REPOSITORY_TOKEN,
@@ -40,27 +41,11 @@ export class GetSentenceUseCase implements IGetSentenceUseCase {
         private readonly sentencesRepository: ISentencesRepository,
     ) {}
 
-    async execute(
-        date: string,
-    ): Promise<GetSentenceResponse | GetSentenceError> {
-        const koreanDate = new Date(date).toLocaleDateString("sv-SE", {
-            timeZone: "Asia/Seoul",
-        });
-
-        const sentence =
-            await this.sentencesRepository.findOneByDate(koreanDate);
-
-        if (!sentence) {
-            return {
-                error: true,
-                message: "해당 날짜에 문장이 없습니다.",
-            };
-        }
+    async execute(date: string): Promise<GetSentenceResponse> {
+        const sentence = await this.sentencesRepository.findOneByDate(date);
 
         return {
-            date: new Date(sentence.createdAt).toLocaleDateString("sv-SE", {
-                timeZone: "Asia/Seoul",
-            }),
+            date: toKoreanLocalDateString(sentence.createdAt),
             sentence: sentence.sentence,
             meaning: sentence.meaning,
             vocab: sentence.vocabs.map((v) => ({
