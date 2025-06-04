@@ -6,11 +6,13 @@ import { VideosEntity } from "./entities/videos.entity";
 import { VocabsEntity } from "./entities/vocabs.entity";
 import { SentencesService } from "./sentences.service";
 import {
+    CHECK_SENTENCE_EXISTS_USECASE_TOKEN,
     GET_SENTENCE_USECASE_TOKEN,
     GET_WEEKLY_SENTENCES_USECASE_TOKEN,
     GetSentenceError,
     GetSentenceResponse,
     GetWeeklySentencesResponse,
+    ICheckSentenceExistsUseCase,
     IGetSentenceUseCase,
     IGetWeeklySentencesUseCase,
 } from "./use-cases";
@@ -20,6 +22,7 @@ describe("sentencesService", () => {
 
     let mockGetSentenceUseCase: jest.Mocked<IGetSentenceUseCase>;
     let mockGetWeeklySentencesUseCase: jest.Mocked<IGetWeeklySentencesUseCase>;
+    let mockCheckSentenceExistsUseCase: jest.Mocked<ICheckSentenceExistsUseCase>;
 
     beforeEach(async () => {
         mockGetSentenceUseCase = {
@@ -27,6 +30,10 @@ describe("sentencesService", () => {
         };
 
         mockGetWeeklySentencesUseCase = {
+            execute: jest.fn(),
+        };
+
+        mockCheckSentenceExistsUseCase = {
             execute: jest.fn(),
         };
 
@@ -40,6 +47,10 @@ describe("sentencesService", () => {
                 {
                     provide: GET_WEEKLY_SENTENCES_USECASE_TOKEN,
                     useValue: mockGetWeeklySentencesUseCase,
+                },
+                {
+                    provide: CHECK_SENTENCE_EXISTS_USECASE_TOKEN,
+                    useValue: mockCheckSentenceExistsUseCase,
                 },
                 {
                     provide: getRepositoryToken(SentencesEntity),
@@ -147,6 +158,37 @@ describe("sentencesService", () => {
 
             expect(result).toEqual(mockSentences);
             expect(mockGetWeeklySentencesUseCase.execute).toHaveBeenCalledWith(
+                "2025-01-01",
+            );
+        });
+    });
+
+    /**
+     * existsByDate
+     */
+    describe("existsByDate", () => {
+        it("should return true if sentence exists", async () => {
+            mockCheckSentenceExistsUseCase.execute.mockReturnValue(
+                Promise.resolve(true),
+            );
+
+            const result = await sentencesService.existsByDate("2025-01-01");
+
+            expect(result).toBe(true);
+            expect(mockCheckSentenceExistsUseCase.execute).toHaveBeenCalledWith(
+                "2025-01-01",
+            );
+        });
+
+        it("should return false if sentence does not exist", async () => {
+            mockCheckSentenceExistsUseCase.execute.mockReturnValue(
+                Promise.resolve(false),
+            );
+
+            const result = await sentencesService.existsByDate("2025-01-01");
+
+            expect(result).toBe(false);
+            expect(mockCheckSentenceExistsUseCase.execute).toHaveBeenCalledWith(
                 "2025-01-01",
             );
         });

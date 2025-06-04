@@ -12,7 +12,7 @@ export class SentencesRepository implements ISentencesRepository {
         private readonly repository: Repository<SentencesEntity>,
     ) {}
 
-    findOneByDate(datetime: string): Promise<SentencesEntity | null> {
+    findOneByDate(datetime: string): Promise<SentencesEntity> {
         return this.repository
             .createQueryBuilder("sentence")
             .select([
@@ -27,7 +27,14 @@ export class SentencesRepository implements ISentencesRepository {
             .leftJoinAndSelect("sentence.vocabs", "vocab")
             .leftJoinAndSelect("sentence.video", "video")
             .where("DATE(sentence.createdAt) = :date", { date: datetime })
-            .getOne();
+            .getOneOrFail();
+    }
+
+    existsByDate(datetime: string): Promise<boolean> {
+        return this.repository
+            .createQueryBuilder("sentence")
+            .where("DATE(sentence.createdAt) = :date", { date: datetime })
+            .getExists();
     }
 
     findByDateRange(

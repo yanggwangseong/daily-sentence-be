@@ -2,10 +2,12 @@ import { Inject, Injectable } from "@nestjs/common";
 
 import { ISentencesService } from "./sentences.service.interface";
 import {
+    CHECK_SENTENCE_EXISTS_USECASE_TOKEN,
     GET_SENTENCE_USECASE_TOKEN,
     GET_WEEKLY_SENTENCES_USECASE_TOKEN,
     GetSentenceResponse,
     GetWeeklySentencesResponse,
+    ICheckSentenceExistsUseCase,
     IGetSentenceUseCase,
     IGetWeeklySentencesUseCase,
 } from "./use-cases";
@@ -22,6 +24,8 @@ export class SentencesService implements ISentencesService {
         private readonly getSentenceUseCase: IGetSentenceUseCase,
         @Inject(GET_WEEKLY_SENTENCES_USECASE_TOKEN)
         private readonly getWeeklySentencesUseCase: IGetWeeklySentencesUseCase,
+        @Inject(CHECK_SENTENCE_EXISTS_USECASE_TOKEN)
+        private readonly checkSentenceExistsUseCase: ICheckSentenceExistsUseCase,
     ) {}
 
     getSentences(
@@ -36,5 +40,9 @@ export class SentencesService implements ISentencesService {
 
     getWeeklySentences(date: string): Promise<GetWeeklySentencesResponse> {
         return this.getWeeklySentencesUseCase.execute(date);
+    }
+
+    existsByDate(date: string): Promise<boolean> {
+        return this.checkSentenceExistsUseCase.execute(date);
     }
 }

@@ -57,8 +57,7 @@ describe("GetSentenceUseCase", () => {
             },
         } as SentencesEntity;
 
-        it("should return sentence data when sentence exists", async () => {
-            // 문장이 존재하는 경우
+        it("should return sentence data mapped to response format", async () => {
             mockSentencesRepository.findOneByDate.mockResolvedValue(
                 mockSentence,
             );
@@ -76,19 +75,6 @@ describe("GetSentenceUseCase", () => {
                     },
                 ],
                 videoUrl: mockSentence.video?.videoUrl || "",
-            });
-            expect(mockSentencesRepository.findOneByDate).toHaveBeenCalled();
-        });
-
-        it("should return error when sentence doesn't exist", async () => {
-            // 문장이 존재하지 않는 경우
-            mockSentencesRepository.findOneByDate.mockResolvedValue(null);
-
-            const result = await useCase.execute("2023-01-01");
-
-            expect(result).toEqual({
-                error: true,
-                message: "해당 날짜에 문장이 없습니다.",
             });
             expect(mockSentencesRepository.findOneByDate).toHaveBeenCalled();
         });

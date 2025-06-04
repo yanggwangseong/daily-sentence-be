@@ -59,7 +59,7 @@ describe("SentencesRepository", () => {
                 where: jest.fn().mockReturnThis(),
                 select: jest.fn().mockReturnThis(),
                 addSelect: jest.fn().mockReturnThis(),
-                getOne: jest.fn().mockResolvedValue(mockSentence),
+                getOneOrFail: jest.fn().mockResolvedValue(mockSentence),
             };
 
             mockSentencesRepository.createQueryBuilder.mockReturnValue(
@@ -87,7 +87,58 @@ describe("SentencesRepository", () => {
                 "DATE(sentence.createdAt) = :date",
                 { date: "2025-01-01" },
             );
-            expect(queryBuilderMock.getOne).toHaveBeenCalled();
+            expect(queryBuilderMock.getOneOrFail).toHaveBeenCalled();
+        });
+    });
+
+    /**
+     * existsByDate
+     */
+    describe("existsByDate", () => {
+        it("should return true if sentence exists", async () => {
+            const queryBuilderMock = {
+                where: jest.fn().mockReturnThis(),
+                getExists: jest.fn().mockResolvedValue(true),
+            };
+
+            mockSentencesRepository.createQueryBuilder.mockReturnValue(
+                queryBuilderMock,
+            );
+
+            const exists = await sentencesRepository.existsByDate("2025-01-01");
+
+            expect(exists).toBe(true);
+            expect(
+                mockSentencesRepository.createQueryBuilder,
+            ).toHaveBeenCalledWith("sentence");
+            expect(queryBuilderMock.where).toHaveBeenCalledWith(
+                "DATE(sentence.createdAt) = :date",
+                { date: "2025-01-01" },
+            );
+            expect(queryBuilderMock.getExists).toHaveBeenCalled();
+        });
+
+        it("should return false if sentence does not exist", async () => {
+            const queryBuilderMock = {
+                where: jest.fn().mockReturnThis(),
+                getExists: jest.fn().mockResolvedValue(false),
+            };
+
+            mockSentencesRepository.createQueryBuilder.mockReturnValue(
+                queryBuilderMock,
+            );
+
+            const exists = await sentencesRepository.existsByDate("2025-01-01");
+
+            expect(exists).toBe(false);
+            expect(
+                mockSentencesRepository.createQueryBuilder,
+            ).toHaveBeenCalledWith("sentence");
+            expect(queryBuilderMock.where).toHaveBeenCalledWith(
+                "DATE(sentence.createdAt) = :date",
+                { date: "2025-01-01" },
+            );
+            expect(queryBuilderMock.getExists).toHaveBeenCalled();
         });
     });
 

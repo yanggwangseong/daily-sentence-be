@@ -50,13 +50,6 @@ export class GetSentenceUseCase implements IGetSentenceUseCase {
         const sentence =
             await this.sentencesRepository.findOneByDate(koreanDate);
 
-        if (!sentence) {
-            return {
-                error: true,
-                message: "해당 날짜에 문장이 없습니다.",
-            };
-        }
-
         return {
             date: new Date(sentence.createdAt).toLocaleDateString("sv-SE", {
                 timeZone: "Asia/Seoul",
