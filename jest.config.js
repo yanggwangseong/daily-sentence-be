@@ -20,5 +20,7 @@ module.exports = {
         "!src/common/response/exception-response.dto.ts",
         "!src/common/sentry/instrument.ts",
         "!src/common/swagger/**",
+        "!src/common/filters/all-exception.filter.ts",
+        "!src/common/interceptors/success-response.interceptor.ts",
     ],
 };

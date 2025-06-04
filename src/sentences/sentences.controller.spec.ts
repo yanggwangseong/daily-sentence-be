@@ -15,6 +15,7 @@ describe("sentencesController", () => {
         mockSentencesService = {
             getSentences: jest.fn(),
             getWeeklySentences: jest.fn(),
+            existsByDate: jest.fn(),
         };
 
         const module: TestingModule = await Test.createTestingModule({
