@@ -1,3 +1,5 @@
+import { isMergebleObject } from "../utils/swagger-type-guard";
+
 /**
  * 객체를 병합하는 함수
  * @param target 병합할 객체
@@ -36,12 +38,4 @@ export const mergeObjects = <T extends object = object>(
     }
 
     return mergeObjects(target, ...sources);
-};
-
-const isObject = (item: any): boolean => {
-    return item !== null && typeof item === "object";
-};
-
-const isMergebleObject = (item: any): boolean => {
-    return isObject(item) && !Array.isArray(item);
 };

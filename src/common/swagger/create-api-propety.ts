@@ -1,49 +1,16 @@
 import { Type } from "@nestjs/common";
 import { ApiPropertyOptions } from "@nestjs/swagger";
 
+import {
+    FunctionType,
+    isLazyTypeFunc,
+    isPrimitiveType,
+} from "../utils/swagger-type-guard";
+
 // 스웨거 메타데이터 키
 const DECORATORS_PREFIX = "swagger";
 const API_MODEL_PROPERTIES = `${DECORATORS_PREFIX}/apiModelProperties`;
 const API_MODEL_PROPERTIES_ARRAY = `${DECORATORS_PREFIX}/apiModelPropertiesArray`;
-
-type FunctionType = (...args: any[]) => any;
-
-// source form lodash
-function isObject(value: null | object | FunctionType) {
-    const type = typeof value;
-    return value != null && (type == "object" || type == "function");
-}
-
-// 기본생성자 함수
-function isFunction(value: any): value is FunctionType {
-    if (!isObject(value)) {
-        return false;
-    }
-    return true;
-}
-
-// () => type 형태의 순환참조로 기술했을때 가져오는 함수
-function isLazyTypeFunc(
-    type: FunctionType | Type<unknown>,
-): type is { type: FunctionType } & FunctionType {
-    return isFunction(type) && type.name == "type";
-}
-
-// 원시타입인지 확인
-function isPrimitiveType(
-    type:
-        | string
-        | FunctionType
-        | Type<unknown>
-        | [FunctionType]
-        | Record<string, any>
-        | undefined,
-): boolean {
-    return (
-        typeof type === "function" &&
-        [String, Boolean, Number].some((item) => item === type)
-    );
-}
 
 // Type 인지 확인하는 커스텀 타입 체커
 function checkType(object: any): object is Type {
