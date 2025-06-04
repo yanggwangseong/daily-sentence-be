@@ -1,9 +1,12 @@
 import { BadRequestException, Injectable, PipeTransform } from "@nestjs/common";
+import { z } from "zod/v4";
 
 @Injectable()
 export class EmailPipe implements PipeTransform {
     transform(value: string) {
-        if (!value.match(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)) {
+        const result = z.email().safeParse(value);
+
+        if (!result.success) {
             throw new BadRequestException("이메일 형식이 올바르지 않습니다.");
         }
 

@@ -26,18 +26,18 @@ export const TypeOrmModuleOptions: TypeOrmModuleAsyncOptions = {
     ): Promise<TypeOrmModuleOptionsType> => {
         const NODE_ENV = configService.get("NODE_ENV");
         const option = {
-            type: configService.get(ENV_DB_TYPE) || "mysql",
-            host: configService.get(ENV_DB_HOST) || "localhost",
-            port: Number(configService.get<number>(ENV_DB_PORT)) || 3306,
-            username: configService.get(ENV_DB_USERNAME) || "root",
-            database: configService.get(ENV_DB_DATABASE) || "test",
-            password: configService.get(ENV_DB_PASSWORD) || "test",
+            type: configService.get(ENV_DB_TYPE) ?? "mysql",
+            host: configService.get(ENV_DB_HOST) ?? "localhost",
+            port: Number(configService.get<number>(ENV_DB_PORT)) ?? 3306,
+            username: configService.get(ENV_DB_USERNAME) ?? "root",
+            database: configService.get(ENV_DB_DATABASE) ?? "test",
+            password: configService.get(ENV_DB_PASSWORD) ?? "test",
             entities: [
                 process.env["NODE_ENV"] === "test"
                     ? path.join(process.cwd(), "src/**/*.entity.ts")
                     : path.join(process.cwd(), "dist/**/*.entity.js"),
             ],
-            synchronize: configService.get<boolean>(ENV_DB_SYNCHRONIZE) || true,
+            synchronize: configService.get<boolean>(ENV_DB_SYNCHRONIZE) ?? true,
             extra: {
                 connectionLimit: 50,
                 waitForConnections: true,

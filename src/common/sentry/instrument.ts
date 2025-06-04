@@ -4,14 +4,12 @@ import dotenv from "dotenv";
 import path from "path";
 
 import { ENV_SENTRY_DNS_KEY } from "../constants/env-keys.const";
+import { getEnvFileName } from "../utils/get-env-file-name";
 
 dotenv.config({
     path: path.resolve(
-        process.env["NODE_ENV"] === "production"
-            ? ".production.env"
-            : process.env["NODE_ENV"] === "stage"
-              ? ".stage.env"
-              : ".development.env",
+        process.cwd(),
+        getEnvFileName(process.env["NODE_ENV"] ?? "development"),
     ),
 });
 

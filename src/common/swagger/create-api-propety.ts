@@ -21,6 +21,31 @@ type ApiPropertyOptionsWithFieldName = ApiPropertyOptions & {
     fieldName: string;
 };
 
+const getPrimitiveOrEnumValue = (property: ApiPropertyOptionsWithFieldName) => {
+    if (typeof property.example !== "undefined") {
+        return property.example;
+    }
+    return property.description;
+};
+
+const handleLazyType = (property: ApiPropertyOptionsWithFieldName) => {
+    const constructorType = (property.type as FunctionType)();
+    if (Array.isArray(constructorType)) {
+        return [createApiProperty(constructorType[0])];
+    }
+    if (property.isArray) {
+        return [createApiProperty(constructorType)];
+    }
+    return createApiProperty(constructorType);
+};
+
+const handleClassType = (property: ApiPropertyOptionsWithFieldName) => {
+    if (property.isArray) {
+        return [createApiProperty(property.type as Type<unknown>)];
+    }
+    return createApiProperty(property.type as Type);
+};
+
 export function createApiProperty<T>(dtoClass: Type): T {
     // 디티오로 생성자를 만들지 않고 해당 타입만 가져옴.
     // 생성자에 인자가 들어간경우 에러가 남.
@@ -28,7 +53,7 @@ export function createApiProperty<T>(dtoClass: Type): T {
 
     // metadata 에서 apiProperty로 저장했던 필드명들을 불러옴
     const propertiesArray: string[] =
-        Reflect.getMetadata(API_MODEL_PROPERTIES_ARRAY, dtoClass.prototype) ||
+        Reflect.getMetadata(API_MODEL_PROPERTIES_ARRAY, dtoClass.prototype) ??
         [];
 
     // apiProperty로 적었던 필드명 하나하나의 정보를 가져오기 위함
@@ -50,61 +75,24 @@ export function createApiProperty<T>(dtoClass: Type): T {
     //  mappingDto 를 만듬
     for (const property of properties) {
         const propertyType = property.type;
+        if (!propertyType) continue;
 
-        if (propertyType) {
-            if (propertyType === "string") {
-                // 스트링 형태의 enum
-                if (typeof property.example !== "undefined") {
-                    mappingDto[property.fieldName] = property.example;
-                } else {
-                    mappingDto[property.fieldName] = property.description;
-                }
-            } else if (propertyType === "number") {
-                // 숫자형태의 enum
-                if (typeof property.example !== "undefined") {
-                    mappingDto[property.fieldName] = property.example;
-                } else {
-                    mappingDto[property.fieldName] = property.description;
-                }
-            } else if (isPrimitiveType(propertyType)) {
-                // 원시타입 [String, Boolean, Number]
+        if (
+            propertyType === "string" ||
+            propertyType === "number" ||
+            isPrimitiveType(propertyType)
+        ) {
+            mappingDto[property.fieldName] = getPrimitiveOrEnumValue(property);
+            continue;
+        }
 
-                if (typeof property.example !== "undefined") {
-                    mappingDto[property.fieldName] = property.example;
-                } else {
-                    mappingDto[property.fieldName] = property.description;
-                }
-            } else if (
-                isLazyTypeFunc(propertyType as FunctionType | Type<unknown>)
-            ) {
-                // type: () => PageMetaDto  형태의 lazy
-                // 익명함수를 실행시켜 안에 Dto 타입을 가져옵니다.
+        if (isLazyTypeFunc(propertyType as FunctionType | Type<unknown>)) {
+            mappingDto[property.fieldName] = handleLazyType(property);
+            continue;
+        }
 
-                const constructorType = (propertyType as FunctionType)();
-
-                if (Array.isArray(constructorType)) {
-                    mappingDto[property.fieldName] = [
-                        createApiProperty(constructorType[0]),
-                    ];
-                } else if (property.isArray) {
-                    mappingDto[property.fieldName] = [
-                        createApiProperty(constructorType),
-                    ];
-                } else {
-                    mappingDto[property.fieldName] =
-                        createApiProperty(constructorType);
-                }
-            } else if (checkType(propertyType)) {
-                //마지막 정상적인 클래스 형태의 타입
-                if (property.isArray) {
-                    mappingDto[property.fieldName] = [
-                        createApiProperty(propertyType),
-                    ];
-                } else {
-                    mappingDto[property.fieldName] =
-                        createApiProperty(propertyType);
-                }
-            }
+        if (checkType(propertyType)) {
+            mappingDto[property.fieldName] = handleClassType(property);
         }
     }
     return mappingDto as T;

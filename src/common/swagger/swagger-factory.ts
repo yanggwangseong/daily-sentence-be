@@ -1,5 +1,4 @@
-import { HttpStatus } from "@nestjs/common";
-import { applyDecorators } from "@nestjs/common";
+import { HttpStatus, applyDecorators } from "@nestjs/common";
 import { ApiOperation } from "@nestjs/swagger";
 
 import {
@@ -37,11 +36,11 @@ export class SwaggerFactory {
         return applyDecorators(
             ApiOperation(options),
             multiSuccessResponse(
-                options.status || HttpStatus.OK,
+                options.status ?? HttpStatus.OK,
                 SuccesResponseOptions,
             ),
             multiExceptionResponse(
-                options.status || HttpStatus.BAD_REQUEST,
+                options.status ?? HttpStatus.BAD_REQUEST,
                 ExceptionResponseOptions,
             ),
             ...additionalDecorators,

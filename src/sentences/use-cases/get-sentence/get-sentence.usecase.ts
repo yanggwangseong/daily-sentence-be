@@ -31,7 +31,6 @@ export interface GetSentenceError {
  * @description 해당 날짜의 문장을 조회하는 유스케이스
  * @param date 날짜
  * @returns 문장 조회 결과
- * @todo if문 예외처리에 대한 관심사를 middleware로 분리하자
  */
 
 @Injectable()

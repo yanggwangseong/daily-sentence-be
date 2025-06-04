@@ -21,7 +21,7 @@ export class SubscribersService implements ISubscribersService {
 
         if (result.error) {
             return {
-                message: result.message || "오류가 발생했습니다.",
+                message: result.message ?? "오류가 발생했습니다.",
                 error: true,
             };
         }

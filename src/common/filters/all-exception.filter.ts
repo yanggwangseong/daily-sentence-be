@@ -18,7 +18,6 @@ import { winstonLogger } from "../logger/winston";
  * @version 1.0.0
  * @author 양광성
  * @since 2025-05-17
- * @todo 정확한 타입을 위한 전체 exception 설계가 필요함
  * @reference https://docs.nestjs.com/exception-filters#exception-filters
  */
 @Catch()
@@ -47,7 +46,8 @@ export class AllExceptionFilter implements ExceptionFilter {
         void this.incomingWebhook.send({
             text: `[${process.env["NODE_ENV"]}] ${exception}`,
         });
-        void this.logError(
+
+        this.logError(
             this.createFormattedErrorLog(exception, httpStatus),
             httpStatus,
         );

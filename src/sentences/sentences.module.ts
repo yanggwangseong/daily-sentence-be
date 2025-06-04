@@ -30,7 +30,6 @@ import {
  * sentences 모듈
  * @description 문장 관리 모듈
  * @author 양광성
- * @todo Dynamic Provider 설계가 필요함
  */
 @Module({
     imports: [
