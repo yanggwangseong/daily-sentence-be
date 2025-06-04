@@ -14,7 +14,6 @@ module.exports = {
         "!src/**/env-keys.const.ts",
         "!**/node_modules/**",
         "!**/dist/**",
-        "!**/coverage/**",
         "!src/common/logger/winston.ts",
         "!src/common/response/success-response.dto.ts",
         "!src/common/response/exception-response.dto.ts",
