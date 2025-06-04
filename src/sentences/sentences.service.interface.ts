@@ -11,4 +11,5 @@ export const SENTENCES_SERVICE_TOKEN = Symbol("SENTENCES_SERVICE_TOKEN");
 export interface ISentencesService {
     getSentences(date: string): Promise<GetSentenceResponse>;
     getWeeklySentences(date: string): Promise<GetWeeklySentencesResponse>;
+    existsByDate(date: string): Promise<boolean>;
 }
