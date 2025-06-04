@@ -14,7 +14,6 @@ import { CreateSubscriberUseCase } from "./use-cases/create-subscriber/create-su
  * subscribers 모듈
  * @description 구독자 관리 모듈
  * @author 양광성
- * @todo Dynamic Provider 설계가 필요함
  */
 @Module({
     imports: [TypeOrmModule.forFeature([SubscribersEntity])],

@@ -2,6 +2,7 @@ import { HttpStatus, Type, applyDecorators } from "@nestjs/common";
 import { ApiExtraModels, ApiResponse, getSchemaPath } from "@nestjs/swagger";
 
 import { ExceptionResponseDto } from "../response/exception-response.dto";
+import { toKoreanLocalDateString } from "../utils/date.util";
 import { createApiProperty } from "./create-api-propety";
 
 export interface MultiExceptionSwaggerOptions {
@@ -43,7 +44,7 @@ export const multiExceptionResponse = (
             const commonErrorInstance =
                 createApiProperty<ExceptionResponseDto>(ExceptionResponseDto);
             commonErrorInstance.success = false;
-            commonErrorInstance.timestamp = new Date().toISOString();
+            commonErrorInstance.timestamp = toKoreanLocalDateString(new Date());
             commonErrorInstance.message = error.message;
             commonErrorInstance.status = StatusCode;
 

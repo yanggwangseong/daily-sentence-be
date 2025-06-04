@@ -14,15 +14,12 @@ import {
 import { AllExceptionFilter } from "./common/filters/all-exception.filter";
 import { SuccessResponseInterceptor } from "./common/interceptors/success-response.interceptor";
 import { winstonLogger } from "./common/logger/winston";
+import { getEnvFileName } from "./common/utils/get-env-file-name";
 
 dotenv.config({
     path: path.resolve(
         process.cwd(),
-        process.env["NODE_ENV"] === "production"
-            ? ".production.env"
-            : process.env["NODE_ENV"] === "stage"
-              ? ".stage.env"
-              : ".development.env",
+        getEnvFileName(process.env["NODE_ENV"] ?? "development"),
     ),
 });
 
