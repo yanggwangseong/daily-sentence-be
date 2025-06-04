@@ -9,7 +9,6 @@ import {
     CHECK_SENTENCE_EXISTS_USECASE_TOKEN,
     GET_SENTENCE_USECASE_TOKEN,
     GET_WEEKLY_SENTENCES_USECASE_TOKEN,
-    GetSentenceError,
     GetSentenceResponse,
     GetWeeklySentencesResponse,
     ICheckSentenceExistsUseCase,
@@ -88,7 +87,7 @@ describe("sentencesService", () => {
                 updatedAt: new Date("2025-01-01"),
                 vocab: [{ word: "Hello", definition: "헬로" }],
                 videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-            } as unknown as GetSentenceResponse | GetSentenceError;
+            } as unknown as GetSentenceResponse;
 
             mockGetSentenceUseCase.execute.mockReturnValue(
                 Promise.resolve(mockSentence),
@@ -97,25 +96,6 @@ describe("sentencesService", () => {
             const result = await sentencesService.getSentences("2025-01-01");
 
             expect(result).toEqual(mockSentence);
-        });
-
-        it("should return null when no sentence is found for the given date", async () => {
-            mockGetSentenceUseCase.execute.mockReturnValue(
-                Promise.resolve({
-                    error: true,
-                    message: "해당 날짜에 문장이 없습니다.",
-                }),
-            );
-
-            const result = await sentencesService.getSentences("2025-01-01");
-
-            expect(result).toEqual({
-                error: true,
-                message: "해당 날짜에 문장이 없습니다.",
-            });
-            expect(mockGetSentenceUseCase.execute).toHaveBeenCalledWith(
-                "2025-01-01",
-            );
         });
     });
 
@@ -158,7 +138,8 @@ describe("sentencesService", () => {
 
             expect(result).toEqual(mockSentences);
             expect(mockGetWeeklySentencesUseCase.execute).toHaveBeenCalledWith(
-                "2025-01-01",
+                "2024-12-30",
+                "2025-01-05",
             );
         });
     });

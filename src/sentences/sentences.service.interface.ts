@@ -1,8 +1,4 @@
-import {
-    GetSentenceError,
-    GetSentenceResponse,
-    GetWeeklySentencesResponse,
-} from "./use-cases";
+import { GetSentenceResponse, GetWeeklySentencesResponse } from "./use-cases";
 
 export const SENTENCES_SERVICE_TOKEN = Symbol("SENTENCES_SERVICE_TOKEN");
 
@@ -13,6 +9,6 @@ export const SENTENCES_SERVICE_TOKEN = Symbol("SENTENCES_SERVICE_TOKEN");
  * @todo Return Type이 LSP를 만족하게 설계하여 OCP를 만족하게 설계해야 함
  */
 export interface ISentencesService {
-    getSentences(date: string): Promise<GetSentenceResponse | GetSentenceError>;
+    getSentences(date: string): Promise<GetSentenceResponse>;
     getWeeklySentences(date: string): Promise<GetWeeklySentencesResponse>;
 }

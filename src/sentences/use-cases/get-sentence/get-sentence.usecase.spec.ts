@@ -1,7 +1,7 @@
 import { Test, TestingModule } from "@nestjs/testing";
 
-import { SentencesEntity } from "@APP/sentences/entities/sentences.entity";
-
+import { toKoreanLocalDateString } from "../../../common/utils/date.util";
+import { SentencesEntity } from "../../entities/sentences.entity";
 import {
     ISentencesRepository,
     SENTENCES_REPOSITORY_TOKEN,
@@ -61,8 +61,8 @@ describe("GetSentenceUseCase", () => {
             mockSentencesRepository.findOneByDate.mockResolvedValue(
                 mockSentence,
             );
-
-            const result = await useCase.execute("2025-01-01");
+            const date = toKoreanLocalDateString(mockSentence.createdAt);
+            const result = await useCase.execute(date);
 
             expect(result).toEqual({
                 date: expect.any(String),

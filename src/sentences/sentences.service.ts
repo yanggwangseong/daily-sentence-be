@@ -1,3 +1,4 @@
+import { DayOfWeek, LocalDate } from "@js-joda/core";
 import { Inject, Injectable } from "@nestjs/common";
 
 import { ISentencesService } from "./sentences.service.interface";
@@ -28,21 +29,38 @@ export class SentencesService implements ISentencesService {
         private readonly checkSentenceExistsUseCase: ICheckSentenceExistsUseCase,
     ) {}
 
-    getSentences(
-        date: string,
-    ): Promise<GetSentenceResponse | GetSentenceError> {
-        const koreanDate = new Date(date).toLocaleDateString("sv-SE", {
-            timeZone: "Asia/Seoul",
-        });
-
-        return this.getSentenceUseCase.execute(koreanDate);
+    getSentences(date: string): Promise<GetSentenceResponse> {
+        return this.getSentenceUseCase.execute(date);
     }
 
     getWeeklySentences(date: string): Promise<GetWeeklySentencesResponse> {
-        return this.getWeeklySentencesUseCase.execute(date);
+        const { startDateStr, endDateStr } = this.getWeeklyRange(date);
+
+        return this.getWeeklySentencesUseCase.execute(startDateStr, endDateStr);
     }
 
     existsByDate(date: string): Promise<boolean> {
         return this.checkSentenceExistsUseCase.execute(date);
+    }
+
+    private getWeeklyRange(date: string): {
+        startDateStr: string;
+        endDateStr: string;
+    } {
+        const inputDate = LocalDate.parse(date); // ex: "2025-06-04"
+
+        const dayOfWeek = inputDate.dayOfWeek(); // 월=1 ~ 일=7
+        const diff =
+            dayOfWeek === DayOfWeek.SUNDAY
+                ? 6
+                : dayOfWeek.ordinal() - DayOfWeek.MONDAY.ordinal(); // 월요일 기준
+
+        const startDate = inputDate.minusDays(diff);
+        const endDate = startDate.plusDays(6);
+
+        return {
+            startDateStr: startDate.toString(), // ex: "2025-06-02"
+            endDateStr: endDate.toString(), // ex: "2025-06-08"
+        };
     }
 }

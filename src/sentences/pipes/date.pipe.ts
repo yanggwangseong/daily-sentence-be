@@ -1,6 +1,7 @@
-import { Instant, ZoneId, ZonedDateTime } from "@js-joda/core";
 import { BadRequestException, Injectable, PipeTransform } from "@nestjs/common";
 import { z } from "zod/v4";
+
+import { toKoreanLocalDateString } from "../../common/utils/date.util";
 
 @Injectable()
 export class DatePipe implements PipeTransform {
@@ -13,11 +14,6 @@ export class DatePipe implements PipeTransform {
             throw new BadRequestException("유효하지 않은 날짜 형식입니다.");
         }
 
-        return ZonedDateTime.ofInstant(
-            Instant.ofEpochMilli(result.data.getTime()),
-            ZoneId.of("Asia/Seoul"),
-        )
-            .toLocalDate()
-            .toString();
+        return toKoreanLocalDateString(result.data);
     }
 }

@@ -2,6 +2,7 @@ import { Test, TestingModule } from "@nestjs/testing";
 
 import { SentencesEntity } from "@APP/sentences/entities/sentences.entity";
 
+import { toKoreanLocalDateString } from "../../../common/utils/date.util";
 import {
     ISentencesRepository,
     SENTENCES_REPOSITORY_TOKEN,
@@ -83,13 +84,13 @@ describe("GetWeeklySentencesUseCase", () => {
             );
 
             // 2025-05-16 (금요일)을 기준으로 테스트
-            const result = await useCase.execute("2025-05-16");
+            const result = await useCase.execute("2025-05-16", "2025-05-22");
 
             expect(result).toHaveLength(2);
             expect(result[0]).toEqual({
-                date: expect.any(String),
-                sentence: mockSentences[0]?.sentence,
-                meaning: mockSentences[0]?.meaning,
+                date: toKoreanLocalDateString(mockSentences[0]!.createdAt),
+                sentence: mockSentences[0]!.sentence,
+                meaning: mockSentences[0]!.meaning,
                 vocab: [
                     {
                         word: mockSentences[0]?.vocabs[0]?.word,
@@ -99,7 +100,7 @@ describe("GetWeeklySentencesUseCase", () => {
                 videoUrl: mockSentences[0]?.video?.videoUrl || "",
             });
             expect(result[1]).toEqual({
-                date: expect.any(String),
+                date: toKoreanLocalDateString(mockSentences[1]!.createdAt),
                 sentence: mockSentences[1]?.sentence,
                 meaning: mockSentences[1]?.meaning,
                 vocab: [
@@ -124,7 +125,7 @@ describe("GetWeeklySentencesUseCase", () => {
             // 결과가 없는 경우
             mockSentencesRepository.findByDateRange.mockResolvedValue([]);
 
-            const result = await useCase.execute("2025-05-16");
+            const result = await useCase.execute("2025-05-16", "2025-05-22");
 
             expect(result).toEqual([]);
             expect(mockSentencesRepository.findByDateRange).toHaveBeenCalled();
@@ -134,7 +135,7 @@ describe("GetWeeklySentencesUseCase", () => {
             // 일요일(2025-05-16)을 입력하면 이전 주 월요일(2025-05-09)부터 일요일(2025-05-16)까지 계산해야 함
             mockSentencesRepository.findByDateRange.mockResolvedValue([]);
 
-            await useCase.execute("2025-05-16"); // 일요일
+            await useCase.execute("2025-05-16", "2025-05-22"); // 일요일
 
             // 첫 번째 인자는 "2025-05-09"(월요일), 두 번째 인자는 "2025-05-16"(일요일)이어야 함
             expect(
