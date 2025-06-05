@@ -78,5 +78,20 @@ describe("GetSentenceUseCase", () => {
             });
             expect(mockSentencesRepository.findOneByDate).toHaveBeenCalled();
         });
+
+        it("should return empty vocab array if vocabs is empty", async () => {
+            const mockSentenceNoVocabs = {
+                ...mockSentence,
+                vocabs: [],
+            };
+            mockSentencesRepository.findOneByDate.mockResolvedValue(
+                mockSentenceNoVocabs,
+            );
+
+            const date = toKoreanLocalDateString(mockSentence.createdAt);
+            const result = await useCase.execute(date);
+
+            expect(result.vocab).toEqual([]);
+        });
     });
 });
