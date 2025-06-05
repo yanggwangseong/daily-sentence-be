@@ -83,5 +83,22 @@ describe("SubscribersService", () => {
                 "test@test.com",
             );
         });
+
+        it("should return an error if subscriber creation fails", async () => {
+            // 유스케이스가 subscriber를 undefined로 반환하도록 모킹
+            mockCreateSubscriberUseCase.execute.mockResolvedValue({
+                subscriber: undefined,
+            });
+
+            const result = await subscribersService.create("test@test.com");
+
+            expect(result).toEqual({
+                message: "구독자 생성에 실패했습니다.",
+                error: true,
+            });
+            expect(mockCreateSubscriberUseCase.execute).toHaveBeenCalledWith(
+                "test@test.com",
+            );
+        });
     });
 });
