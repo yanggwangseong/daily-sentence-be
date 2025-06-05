@@ -103,7 +103,7 @@ describe("sentencesService", () => {
      * getWeeklySentences
      */
     describe("getWeeklySentences", () => {
-        it("should return sentences for the week", async () => {
+        it("should return sentences for the week when input is not Sunday", async () => {
             const mockSentences = [
                 {
                     id: 1,
@@ -135,6 +135,35 @@ describe("sentencesService", () => {
 
             const result =
                 await sentencesService.getWeeklySentences("2025-01-01");
+
+            expect(result).toEqual(mockSentences);
+            expect(mockGetWeeklySentencesUseCase.execute).toHaveBeenCalledWith(
+                "2024-12-30",
+                "2025-01-05",
+            );
+        });
+
+        it("should return sentences for the week when input is Sunday", async () => {
+            const mockSentences = [
+                {
+                    id: 1,
+                    sentence: "Hello, world!",
+                    meaning: "헬로 월드!",
+                    createdAt: new Date("2025-01-05"),
+                    updatedAt: new Date("2025-01-05"),
+                    vocabs: [{ word: "Hello", definition: "헬로" }],
+                    video: {
+                        videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+                    },
+                },
+            ] as unknown as GetWeeklySentencesResponse;
+
+            mockGetWeeklySentencesUseCase.execute.mockReturnValue(
+                Promise.resolve(mockSentences),
+            );
+
+            const result =
+                await sentencesService.getWeeklySentences("2025-01-05");
 
             expect(result).toEqual(mockSentences);
             expect(mockGetWeeklySentencesUseCase.execute).toHaveBeenCalledWith(

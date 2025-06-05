@@ -1,4 +1,4 @@
-export function getEnvFileName(env: string): string {
+export const getEnvFileName = (env: string): string => {
     switch (env) {
         case "production":
             return ".production.env";
@@ -7,4 +7,4 @@ export function getEnvFileName(env: string): string {
         default:
             return ".development.env";
     }
-}
+};
