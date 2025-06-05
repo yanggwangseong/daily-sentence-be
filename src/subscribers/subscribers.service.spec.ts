@@ -100,5 +100,22 @@ describe("SubscribersService", () => {
                 "test@test.com",
             );
         });
+
+        it("should return default error message if result.error is true and message is undefined", async () => {
+            mockCreateSubscriberUseCase.execute.mockResolvedValue({
+                error: true,
+                message: undefined,
+            });
+
+            const result = await subscribersService.create("test@test.com");
+
+            expect(result).toEqual({
+                message: "오류가 발생했습니다.",
+                error: true,
+            });
+            expect(mockCreateSubscriberUseCase.execute).toHaveBeenCalledWith(
+                "test@test.com",
+            );
+        });
     });
 });
